@@ -13,6 +13,8 @@ public class Persona {
         this.edad = edad;
         this.trabajadorSalud = trabajadorSalud;
         this.enfermedadPreexistente = enfermedadPreexistente;
+        this.vacuna = null;
+        this.turno = null;
     }
     public void asignarVacuna(VacunaCovid19 vacuna) {
         this.vacuna = vacuna;
@@ -50,6 +52,20 @@ public class Persona {
     public void setEnfermedadPreexistente(boolean enfermedadPreexistente) {
         this.enfermedadPreexistente = enfermedadPreexistente;
     }
+    
+    
+	public VacunaCovid19 getVacuna() {
+		return vacuna;
+	}
+	public void setVacuna(VacunaCovid19 vacuna) {
+		this.vacuna = vacuna;
+	}
+	public Turno getTurno() {
+		return turno;
+	}
+	public void setTurno(Turno turno) {
+		this.turno = turno;
+	}
 	@Override
 	public String toString() {
 		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud

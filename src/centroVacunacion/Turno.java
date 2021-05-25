@@ -35,4 +35,10 @@ public class Turno {
 	public boolean estaVencido() {
 		return Fecha.hoy().compareTo(fecha) > 0;
 	}
+	@Override
+	public String toString() {
+		return "Turno [fecha=" + fecha + ", persona=" + persona.getEdad() + ", vacuna=" + vacuna.getName() + "]";
+	}
+	
+	
 }

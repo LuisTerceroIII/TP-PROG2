@@ -10,6 +10,7 @@ public class Moderna extends VacunaCovid19 {
     
 	public Moderna(Fecha fechaIngreso) {
 		super(fechaIngreso);
+		super.setName("Moderna");
 		super.setExclusivaMayores60(false);
 		setFechaVencimiento(fechaIngreso);
 		super.setStoreTemperature(-18);
@@ -17,8 +18,7 @@ public class Moderna extends VacunaCovid19 {
 	
 	private void setFechaVencimiento(Fecha fechaIngreso) {
 		this.fechaVencimiento = new Fecha(fechaIngreso);
-		this.fechaVencimiento.avanzar30Dias();
-		this.fechaVencimiento.avanzar30Dias();
+		this.fechaVencimiento.avanzar60Dias();
 	}
 
 	public Fecha getFechaVencimiento() {
