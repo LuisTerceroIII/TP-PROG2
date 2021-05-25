@@ -50,5 +50,13 @@ public class Persona {
     public void setEnfermedadPreexistente(boolean enfermedadPreexistente) {
         this.enfermedadPreexistente = enfermedadPreexistente;
     }
+	@Override
+	public String toString() {
+		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud
+				+ ", enfermedadPreexistente=" + enfermedadPreexistente + ", vacuna=" + vacuna + ", turno=" + turno
+				+ "]";
+	}
+    
+    
 
 }

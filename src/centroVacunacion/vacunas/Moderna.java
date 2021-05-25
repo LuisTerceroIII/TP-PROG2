@@ -24,5 +24,11 @@ public class Moderna extends VacunaCovid19 {
 	public Fecha getFechaVencimiento() {
 		return fechaVencimiento;
 	}
+	
+	
+	//Verdadero si esta vencida !
+	public boolean estaVencida() {
+		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
+	}
 
 }

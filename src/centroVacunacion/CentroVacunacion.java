@@ -2,6 +2,7 @@ package centroVacunacion;
 
 import java.awt.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,10 +18,12 @@ import centroVacunacion.vacunas.SputnikV;
 
 public class CentroVacunacion {
 	
-	 	private HashSet<Persona> personasSinTurno;
-	    private HashSet<Persona> personasConTurno;
-	    private HashSet<Persona> personasVacunadas; // Cuando se implemente una funcion "vacunar" tomara las personas de la lista personasConTurno y los movera a este conjunto.
-	    public ArrayList<VacunaCovid19> vacunasEnStock;
+	 	private HashMap<Integer,Persona> personasSinTurno;
+	    private HashMap<Integer,Persona> personasConTurno;
+	    private HashMap<Integer,Persona> personasVacunadas; // Cuando se implemente una funcion "vacunar" tomara las personas de la lista personasConTurno y los movera a este conjunto.
+	    private ArrayList<VacunaCovid19> vacunasEnStock;
+	    private ArrayList<VacunaCovid19> vacunasReservadas;
+	    private ArrayList<VacunaCovid19> vacunasVencidas;
 	    private HashSet<Turno> turnos;
 	    private int capacidadVacunacionDiaria;
 	    private String nombreCentro;
@@ -39,10 +42,12 @@ public class CentroVacunacion {
 	    	} else {
 	    		this.nombreCentro = nombreCentro;
 		    	this.capacidadVacunacionDiaria = capacidadVacunacionDiaria;
-		    	this.personasSinTurno = new HashSet<>();
-		    	this.personasConTurno = new HashSet<>();
-		    	this.personasVacunadas = new HashSet<>();
-		    	this.vacunasEnStock = new ArrayList<VacunaCovid19>();
+		    	this.personasSinTurno = new HashMap<>();
+		    	this.personasConTurno = new HashMap<>();
+		    	this.personasVacunadas = new HashMap<>();
+		    	this.vacunasEnStock = new ArrayList<>();
+		    	this.vacunasReservadas = new ArrayList<>();
+		    	this.vacunasVencidas = new ArrayList<>();
 		    	this.turnos = new HashSet<>();
 	    	}
 	    
@@ -58,8 +63,7 @@ public class CentroVacunacion {
 	    * sumar al stock existente, tomando en cuenta las vacunas ya utilizadas.
 	    */
 	    public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
-	    	if(cantidad < 0) throw new RuntimeException("Cantidad de vacunas no puede ser negativa");
-	    	
+	    	if(cantidad <= 0) throw new RuntimeException("Cantidad de vacunas debe ser mayor a 0");
 	    	switch (nombreVacuna.toUpperCase()) {
 			case "ASTRAZENECA":
 				for (int i = 0; i < cantidad ; i++) {
@@ -95,53 +99,64 @@ public class CentroVacunacion {
 				throw new RuntimeException("Vacuna no se reconoce");
 			}
 	    	
+	    	System.out.println(vacunasEnStock.size());
+	    	
 	    	
 	    }
 	
-	    
 	    /**
 	    * total de vacunas disponibles no vencidas sin distinción por tipo.
 	    */
-	    //TODO: Elimino las vacunas, porque aun no estan asignadass a personas o turnos.!
+	    //TODO: Elimino las vacunas, porque aun no estan asignadas a personas o turnos.!
 	    public int vacunasDisponibles() {
 	    	int total = vacunasEnStock.size();
-	    	Fecha hoy = Fecha.hoy();
 	    	Iterator<VacunaCovid19> it = vacunasEnStock.iterator();
 	    	while(it.hasNext()) {
 	    		VacunaCovid19 vacuna = it.next();
 	    		if(vacuna instanceof Pfizer) {
 	    			Pfizer pfizer = (Pfizer) vacuna;
-	    			if(hoy.compareTo(pfizer.getFechaVencimiento()) > 0) {
-	    				it.remove();
+	    			if(pfizer.estaVencida()) {
 	    				total--;
-	    			} continue;
+	    				it.remove();
+	    			}
 	    		} else if(vacuna instanceof Moderna) {
 	    			Moderna moderna = (Moderna) vacuna;
-	    			if(hoy.compareTo(moderna.getFechaVencimiento()) > 0) {
-	    				it.remove();
+	    			if(moderna.estaVencida()) {
 	    				total--;
+	    				it.remove();
 	    			}
 	    		}
 	    	}
-	    	
 	    	return total;
 	    }
-	    
-	    /**
-	     * @param args
-	     */
-	    public static void main(String[] args) {
-			 
-			 
-		}
-	    
 	    
 	    /**
 	    * total de vacunas disponibles no vencidas que coincida con el nombre de
 	    * vacuna especificado.
 	    */
 	    public int vacunasDisponibles(String nombreVacuna) {
-	    	return 0;
+	    	int disponibles = 0;
+	    	Iterator<VacunaCovid19> it = vacunasEnStock.iterator();
+	    	while(it.hasNext()) {
+	    		VacunaCovid19 vacuna = it.next();
+	    		if(vacuna.getName().toUpperCase().equals(nombreVacuna.toUpperCase()) ) {
+	    			disponibles++;
+	    			if(vacuna instanceof Pfizer) {
+	    				Pfizer pfizer = (Pfizer) vacuna;
+	    				if(pfizer.estaVencida()) {
+	    					 it.remove();
+	    					 disponibles--;
+	    				}
+	    			} else if(vacuna instanceof Moderna) {
+	    				Moderna moderna = (Moderna) vacuna;
+	    				if(moderna.estaVencida()) {
+	    					it.remove();
+	    					disponibles--;
+	    				}
+	    			}
+	    		}
+	    	}
+	    	return disponibles;
 		}
 	    
 	    
@@ -151,9 +166,20 @@ public class CentroVacunacion {
 	    * generar una excepción.
 	    * Si la persona ya fue vacunada, también debe generar una excepción.
 	    */
-	    public void inscribirPersona(int dni, Fecha nacimiento,
-	    boolean tienePadecimientos, boolean esEmpleadoSalud) {
-	    	
+	    public void inscribirPersona(int dni, Fecha nacimiento, boolean tienePadecimientos, boolean esEmpleadoSalud) {
+	    	//System.out.println(Fecha.diferenciaAnios(Fecha.hoy(), new Fecha(5, 4, 1964)));
+	    	int edad = Fecha.diferenciaAnios(Fecha.hoy(), nacimiento);
+	    	if(edad < 18) {
+	    		throw new RuntimeException("Debe ser mayor de edad para inscribirse.");
+	    	} else if(personasSinTurno.containsKey(dni)) {
+	    		throw new RuntimeException("Persona ya inscripta.");
+	    	} else if(personasVacunadas.containsKey(dni)) {
+	    		throw new RuntimeException("Persona ya fue vacunada.");
+	    	} else {
+	    		
+	    		personasSinTurno.put(dni, new Persona(dni,edad,esEmpleadoSalud,tienePadecimientos));
+	    		
+	    	}
 	    }
 	    
 	    
@@ -164,10 +190,24 @@ public class CentroVacunacion {
 	    * Si no quedan inscriptos sin vacunas debe devolver una lista vacía.
 	    */
 	    public java.util.List<Integer> listaDeEspera() {
-	    	return new ArrayList<Integer>();
+	    	ArrayList<Integer> listaEspera = new ArrayList<>();
+	    	listaEspera.addAll(this.personasSinTurno.keySet());
+	    	return listaEspera;
 	    }
 	   
-	    
+	    /**
+	     * @param args
+	     */
+	    public static void main(String[] args) {
+	    	CentroVacunacion centro = new CentroVacunacion("UNGS", 5);
+			centro.ingresarVacunas("Sputnik", 10,new Fecha(20,3,2021));
+			centro.ingresarVacunas("AstraZeneca", 10,new Fecha(20,3,2021));
+			System.out.println(centro.vacunasEnStock);
+			centro.inscribirPersona(34701000, new Fecha(1, 5, 1989), false, false);
+			
+			
+			
+		}
 	    /**
 	    * Primero se verifica si hay turnos vencidos. En caso de haber turnos
 	    * vencidos, la persona que no asistió al turno debe ser borrada del sistema
@@ -184,6 +224,45 @@ public class CentroVacunacion {
 	    *
 	    */
 	    public void generarTurnos(Fecha fechaInicial) {
+	    	
+	    	Fecha hoy = Fecha.hoy();
+	    	
+	    	/* Verificar turnos vencidos*/
+	    	Iterator<Turno> itTurnos = turnos.iterator();
+	    	while(itTurnos.hasNext()) {
+	    		Turno turno = itTurnos.next();
+	    		if(turno.estaVencido()) {
+	    			int dni = turno.getPersona().getDni();
+	    			VacunaCovid19 vacuna = turno.getVacuna();
+	    			personasConTurno.remove(dni);
+	    			vacunasReservadas.remove(vacuna);
+	    			vacunasEnStock.add(vacuna);
+	    			itTurnos.remove();
+	    		}
+	    	}
+	    	/* ------------------- */
+	    	
+	    	/*Segundo, se deben verificar si hay vacunas vencidas y quitarlas del sistema.*/
+	    	/*Verificar vacunas vencidas*/
+	    	Iterator<VacunaCovid19> itVacunas = vacunasEnStock.iterator();
+	    	while(itVacunas.hasNext()) {
+	    		VacunaCovid19 vacuna = itVacunas.next();
+	    		if(vacuna instanceof Pfizer) {
+	    			Pfizer pfizer = (Pfizer) vacuna;
+	    			if(pfizer.estaVencida()) {
+	    				itVacunas.remove();
+	    			} 
+	    		} else if(vacuna instanceof Moderna) {
+	    			Moderna moderna = (Moderna) vacuna;
+	    			if(moderna.estaVencida()) {
+	    				itVacunas.remove();
+	    			}
+	    		}
+	    	}
+	    	
+	    	
+	    	
+	    	/* ------------------- */
 	    	
 	    }
 	    /**

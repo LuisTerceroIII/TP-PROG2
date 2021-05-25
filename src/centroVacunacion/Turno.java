@@ -1,14 +1,14 @@
 package centroVacunacion;
 
-import java.time.LocalDate;
 
 public class Turno {
 
-    private LocalDate fecha;
+    private Fecha fecha;
     private Persona persona;
     private VacunaCovid19 vacuna;
+    
 
-    public Turno(LocalDate fecha, Persona persona, VacunaCovid19 vacuna) {
+    public Turno(Fecha fecha, Persona persona, VacunaCovid19 vacuna) {
         this.fecha = fecha;
         this.persona = persona;
         this.vacuna = vacuna;
@@ -19,10 +19,10 @@ public class Turno {
     public void asignarVacuna(VacunaCovid19 vacuna) {
         this.vacuna = vacuna;
     }
-    public void asignarFecha(LocalDate fecha) {
+    public void asignarFecha(Fecha fecha) {
         this.fecha = fecha;
     }
-    public LocalDate getFecha() {
+    public Fecha getFecha() {
         return fecha;
     }
     public Persona getPersona() {
@@ -31,4 +31,8 @@ public class Turno {
     public VacunaCovid19 getVacuna() {
         return vacuna;
     }
+	//Verdadero si esta vencida !
+	public boolean estaVencido() {
+		return Fecha.hoy().compareTo(fecha) > 0;
+	}
 }

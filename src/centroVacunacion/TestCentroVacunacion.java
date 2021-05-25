@@ -29,13 +29,11 @@ public class TestCentroVacunacion {
 
 	@Test
 	public void testIngresarVacunas() {
-	
+		System.out.println(centro.vacunasDisponibles());
 		assertEquals(20, centro.vacunasDisponibles());
 		centro.ingresarVacunas("Pfizer", 10,new Fecha(20,5,2021));
 		centro.ingresarVacunas("Moderna", 10,new Fecha(20,5,2021));
 		centro.ingresarVacunas("Sinopharm", 10,new Fecha(20,3,2021));
-		System.out.println(centro.vacunasDisponibles());
-		System.out.println(centro.vacunasEnStock);
 		assertEquals(50, centro.vacunasDisponibles());
 	}
 
