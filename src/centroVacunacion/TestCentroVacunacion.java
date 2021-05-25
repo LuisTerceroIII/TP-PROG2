@@ -89,11 +89,13 @@ public class TestCentroVacunacion {
 		/*
 		 * System.out.println(centro.turnos); System.out.println(centro.turnos.size());
 		 */
-		
-		System.out.println(centro.personasConTurno.containsKey(29959000));
-		Persona persona = centro.personasConTurno.get(29959000);
-		System.out.println(persona);
+		/*
+		 * System.out.println(centro.personasConTurno.containsKey(29959000)); Persona
+		 * persona = centro.personasConTurno.get(29959000);
+		 * 		System.out.println(persona);
 		System.out.println(fecha);
+		 */
+
 		
 		centro.vacunarInscripto(dniAVacunar,new Fecha(30,6,2021));
 
@@ -108,17 +110,13 @@ public class TestCentroVacunacion {
 		centro.generarTurnos(new Fecha(5,7,2021));
 		
 		
-	//NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR!
-		for(VacunaCovid19 vacuna : centro.vacunasEnStock) {
-			if(vacuna instanceof Pfizer) {
-				System.out.println("Pfizer : " + ((Pfizer) vacuna).estaVencida());
-			}
-			if(vacuna instanceof Moderna) {
-				System.out.println("Moderna : " + ((Moderna) vacuna).estaVencida());
-			}
-		}
-		System.out.println(centro.vacunasEnStock.size());
-		
+		/*
+		 * //NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR! for(VacunaCovid19
+		 * vacuna : centro.vacunasEnStock) { if(vacuna instanceof Pfizer) {
+		 * System.out.println("Pfizer : " + ((Pfizer) vacuna).estaVencida()); }
+		 * if(vacuna instanceof Moderna) { System.out.println("Moderna : " + ((Moderna)
+		 * vacuna).estaVencida()); } } System.out.println(centro.vacunasEnStock.size());
+		 */
 		assertEquals(19, centro.vacunasDisponibles());
 		assertTrue(centro.listaDeEspera().isEmpty());
 	}

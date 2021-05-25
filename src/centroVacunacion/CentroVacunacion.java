@@ -1,14 +1,11 @@
 package centroVacunacion;
 
-import java.awt.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
 
 import centroVacunacion.vacunas.Astrazeneca;
 import centroVacunacion.vacunas.Moderna;
@@ -19,13 +16,13 @@ import centroVacunacion.vacunas.SputnikV;
 public class CentroVacunacion {
 	
 	 	private HashMap<Integer,Persona> personasSinTurno;
-	    public HashMap<Integer,Persona> personasConTurno;
+	 	private HashMap<Integer,Persona> personasConTurno;
 	    private Map<Integer,Persona> personasVacunadas; // Cuando se implemente una funcion "vacunar" tomara las personas de la lista personasConTurno y los movera a este conjunto.
-	    public ArrayList<VacunaCovid19> vacunasEnStock;
+	    private ArrayList<VacunaCovid19> vacunasEnStock;
 	    private ArrayList<VacunaCovid19> vacunasReservadas;
-	    public HashMap<String,Integer> vacunasVencidas;
-	    public ArrayList<VacunaCovid19> vacunasAplicadas;
-	    public HashSet<Turno> turnos;
+	    private HashMap<String,Integer> vacunasVencidas;
+	    private ArrayList<VacunaCovid19> vacunasAplicadas;
+	    private HashSet<Turno> turnos;
 	    private int capacidadVacunacionDiaria;
 	    private String nombreCentro;
 	    private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
