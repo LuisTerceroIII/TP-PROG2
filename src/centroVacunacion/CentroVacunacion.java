@@ -125,12 +125,7 @@ public class CentroVacunacion {
 	    			}
 	    		}
 	    	}
-			/*
-			 * for(VacunaCovid19 vacuna : vacunasReservadas) { if(vacuna instanceof Pfizer)
-			 * { Pfizer pfizer = (Pfizer) vacuna; if(pfizer.estaVencida()) { total--; } }
-			 * else if(vacuna instanceof Moderna) { Moderna moderna = (Moderna) vacuna;
-			 * if(moderna.estaVencida()) { total--; } } }
-			 */
+
 	    	return total;
 	    }
 	    
@@ -310,43 +305,31 @@ public class CentroVacunacion {
 	    	
 	    	while(itPersonas.hasNext()) {
 	    		Persona persona = personasSinTurno.get(itPersonas.next());
-	    		
-	    		//Por implemtancion me conviene enviarlo a mayoresDe60
-    			//y no a trabajadores de salud, sino tendre que volver a validar la edad 
-    			//en un grupo que no corresponde.
-	    		if(persona.isTrabajadorSalud() && persona.isEnfermedadPreexistente() && persona.getEdad() > 60) {
-	    			mayoresDe60.add(persona);
-	    			
-	    	
-	    		} else if (persona.isTrabajadorSalud() && persona.getEdad() > 60) {
-	    			mayoresDe60.add(persona);
-	    			
-	    		} else if (persona.isTrabajadorSalud() && persona.isEnfermedadPreexistente()) {
-	    			trabajadoresSalud.add(persona);
-	    			
-	    		} else if(persona.isTrabajadorSalud()) {
-	    			trabajadoresSalud.add(persona);
-	    			
-	    		} else if(persona.getEdad() > 60 && persona.isEnfermedadPreexistente()) {
-	    			mayoresDe60.add(persona);
-	    		
-	    		} else if(persona.getEdad() > 60) {
-	    			mayoresDe60.add(persona);
-	    		}
-	    		
-	    		else if(persona.isEnfermedadPreexistente()) {
-	    			conEnfermedadPreexistente.add(persona);
-	    		} else {
-	    			resto.add(persona);
-	    		}
+	    		switch (persona.getPrioridad()) {
+				case 1:
+					trabajadoresSalud.add(persona);
+					break;
+				case 2:
+					mayoresDe60.add(persona);
+					break;
+				case 3:
+					conEnfermedadPreexistente.add(persona);
+					break;	
+
+				default:
+					resto.add(persona);
+					break;
+				}
 	    	}
 	    	
+			
 			/*
 			 * System.out.println("Trabajadores : " + trabajadoresSalud);
 			 * System.out.println("Mayores : " + mayoresDe60);
 			 * System.out.println("Enfermos : " + conEnfermedadPreexistente);
 			 * System.out.println("Otros : " + resto);
 			 */
+			 
 	    	
 	    	/* ----------Fin 1er. Parte--------- */
 	    	
