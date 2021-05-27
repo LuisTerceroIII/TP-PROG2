@@ -54,18 +54,6 @@ public class Persona {
 		}
     }
     
-    public void asignarVacuna(VacunaCovid19 vacuna) {
-        this.vacuna = vacuna;
-    }
-    public void asignarTurno(Turno turno) {
-        this.turno = turno;
-    }
-    public VacunaCovid19 verVacuna() {
-        return vacuna;
-    }
-    public Turno verTurno() {
-        return turno;
-    }
     public int getDni() {
         return dni;
     }
@@ -91,7 +79,6 @@ public class Persona {
         this.enfermedadPreexistente = enfermedadPreexistente;
     }
     
-    
 	public VacunaCovid19 getVacuna() {
 		return vacuna;
 	}
@@ -106,9 +93,14 @@ public class Persona {
 	}
 	@Override
 	public String toString() {
-		return "Persona [dni=" + dni + ", edad=" + edad + ", trabajadorSalud=" + trabajadorSalud
-				+ ", enfermedadPreexistente=" + enfermedadPreexistente + ", vacuna=" + vacuna + ", turno=" + turno
-				+ "]";
+		
+		return new StringBuilder()
+				.append("Persona [ DNI :").append(dni)
+				.append(", Edad :").append(edad)
+				.append(", Trabajador de la salud : ").append(trabajadorSalud)
+				.append(", Enfermedad Preexistente : ").append(enfermedadPreexistente)
+				.append(", Vacuna : ").append(vacuna != null ? vacuna : "" )
+				.append(", Turno : ").append(turno != null ? turno.getFecha() : "").append(" ]").toString();
 	}
     
     

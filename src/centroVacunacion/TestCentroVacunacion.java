@@ -111,7 +111,7 @@ public class TestCentroVacunacion {
 		
 		
 		/*
-		 * //NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR! for(VacunaCovid19
+		 * //NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR! (La Pfizer y moderna vencen, las otras no) for(VacunaCovid19
 		 * vacuna : centro.vacunasEnStock) { if(vacuna instanceof Pfizer) {
 		 * System.out.println("Pfizer : " + ((Pfizer) vacuna).estaVencida()); }
 		 * if(vacuna instanceof Moderna) { System.out.println("Moderna : " + ((Moderna)
