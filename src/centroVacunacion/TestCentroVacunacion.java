@@ -61,13 +61,15 @@ public class TestCentroVacunacion {
 		assertEquals(20, centro.vacunasDisponibles());
 		
 		centro.generarTurnos(fechaInicial);
+
 	
 		
 		assertEquals(0, centro.listaDeEspera().size());
 		assertEquals(12, centro.vacunasDisponibles());
-
+		
+	
 		// son 8 anotados y la capacidad diaria es 5 personas.
-		assertEquals(5, centro.turnosConFecha(new Fecha(2, 7, 2021)).size());
+		assertEquals(5, centro.turnosConFecha(fechaInicial).size());
 		assertEquals(3, centro.turnosConFecha(fechaSiguiente).size());
 		assertEquals(0, centro.turnosConFecha(fechaAnteriorSinTurnos).size());
 		assertEquals(0, centro.turnosConFecha(fechaPosteriorSinTurnos).size());
@@ -111,7 +113,7 @@ public class TestCentroVacunacion {
 		
 		
 		/*
-		 * //NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR! for(VacunaCovid19
+		 * //NO HAY NINGUNA VACUNA QUE SE VENZA ! SIEMPRE ERROR! (La Pfizer y moderna vencen, las otras no) for(VacunaCovid19
 		 * vacuna : centro.vacunasEnStock) { if(vacuna instanceof Pfizer) {
 		 * System.out.println("Pfizer : " + ((Pfizer) vacuna).estaVencida()); }
 		 * if(vacuna instanceof Moderna) { System.out.println("Moderna : " + ((Moderna)

@@ -45,8 +45,12 @@ public abstract class VacunaCovid19 {
 
     @Override
     public String toString() {
-        return   "Vacuna : '" + name + '\'' +
-                ", Temperatura de almacenaje : " + storeTemperature;
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("Vacuna Nombre : ").append(name)
+    	.append(", Temperatura de almacenaje : ").append(storeTemperature)
+    	.append(", Fecha de ingreso : ").append(fechaIngreso);
+    	
+        return sb.toString();
     }
 
 	@Override

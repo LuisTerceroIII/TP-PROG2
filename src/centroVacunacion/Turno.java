@@ -37,7 +37,12 @@ public class Turno {
 	}
 	@Override
 	public String toString() {
-		return "Turno [fecha=" + fecha + ", persona=" + persona.getDni()  + " Edad : " +persona.getEdad() + ", vacuna=" + vacuna.getName() + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Turno [ Fecha : " ).append(fecha)
+		.append(", Persona : DNI : ").append(persona.getDni())
+		.append(", Vacuna : ").append(vacuna.getName())
+		.append(" ]");
+		return sb.toString();
 	}
 	
 	
