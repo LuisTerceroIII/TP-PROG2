@@ -27,12 +27,15 @@ public class CentroVacunacion {
 	    private int capacidadVacunacionDiaria;
 	    private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
 	    private int turnosAsignados;
+	    private Frigorifico frigorifico3Grados;// 3 grados
+	    private Frigorifico frigorificoMenos18Grados;// -18 grados
+	    
 
 	    /**
 	    * Constructor.
-	    * recibe el nombre del centro y la capacidad de vacunación diaria.
-	    * Si la capacidad de vacunación no es positiva se debe generar una excepción.
-	    * Si el nombre no está definido, se debe generar una excepción.
+	    * recibe el nombre del centro y la capacidad de vacunaciï¿½n diaria.
+	    * Si la capacidad de vacunaciï¿½n no es positiva se debe generar una excepciï¿½n.
+	    * Si el nombre no estï¿½ definido, se debe generar una excepciï¿½n.
 	    */
  	    public CentroVacunacion(String nombreCentro, int capacidadVacunacionDiaria) {
 	    	if(nombreCentro == null || nombreCentro.length() < 1) {
@@ -52,6 +55,8 @@ public class CentroVacunacion {
 		    	this.vacunasVencidas = new HashMap<>();
 		    	this.turnos = new HashSet<>();
 		    	this.turnosAsignados = 0;
+		    	this.frigorifico3Grados = new Frigorifico(3, 50000);
+                this.frigorificoMenos18Grados = new Frigorifico(-18, 50000);
 		    	vacunasVencidas.put("Moderna", 0);
 		    	vacunasVencidas.put("Pfizer", 0);
 	    	}
@@ -61,8 +66,8 @@ public class CentroVacunacion {
 	    /**
 	    * Solo se pueden ingresar los tipos de vacunas planteados en la 1ra parte.
 	    * Si el nombre de la vacuna no coincidiera con los especificados se debe generar
-	    * una excepción.
-	    * También se genera excepción si la cantidad es negativa.
+	    * una excepciï¿½n.
+	    * Tambiï¿½n se genera excepciï¿½n si la cantidad es negativa.
 	    * La cantidad se debe
 	    * sumar al stock existente, tomando en cuenta las vacunas ya utilizadas.
 	    */
@@ -71,31 +76,36 @@ public class CentroVacunacion {
 	    	switch (nombreVacuna.toUpperCase()) {
 			case "ASTRAZENECA":
 				for (int i = 0; i < cantidad ; i++) {
-					vacunasEnStock.add(new Astrazeneca(fechaIngreso));	
+					vacunasEnStock.add(new Astrazeneca(fechaIngreso));
+					frigorifico3Grados.almacenar();
 				}
 				break;
 				
 			case "MODERNA":
 				for (int i = 0; i < cantidad ; i++) {
-					vacunasEnStock.add(new Moderna(fechaIngreso));	
+					vacunasEnStock.add(new Moderna(fechaIngreso));
+					frigorificoMenos18Grados.almacenar();
 				}
 				break;
 				
 			case "PFIZER":
 				for (int i = 0; i < cantidad ; i++) {
-					vacunasEnStock.add(new Pfizer(fechaIngreso));	
+					vacunasEnStock.add(new Pfizer(fechaIngreso));
+					frigorificoMenos18Grados.almacenar();
 				}
 				break;
 				
 			case "SINOPHARM":
 				for (int i = 0; i < cantidad ; i++) {
-					vacunasEnStock.add(new Sinopharm(fechaIngreso));	
+					vacunasEnStock.add(new Sinopharm(fechaIngreso));
+					frigorifico3Grados.almacenar();
 				}
 				break;
 				
 			case "SPUTNIK":
 				for (int i = 0; i < cantidad ; i++) {
-					vacunasEnStock.add(new SputnikV(fechaIngreso));	
+					vacunasEnStock.add(new SputnikV(fechaIngreso));
+					frigorifico3Grados.almacenar();
 				}
 				break;
 				
@@ -106,9 +116,9 @@ public class CentroVacunacion {
 	    }
 	
 	    /**
-	    * total de vacunas disponibles no vencidas sin distinción por tipo.
+	    * total de vacunas disponibles no vencidas sin distinciï¿½n por tipo.
 	    */
-	    //TODO: Elimino las vacunas, porque aun no estan asignadas a personas o turnos.!
+	    //TODO: Â¿Debe eliminar a las vacunas vencidas?
 	    public int vacunasDisponibles() {
 	    	int total = vacunasEnStock.size();
 	    	Iterator<VacunaCovid19> it = vacunasEnStock.iterator();
@@ -134,6 +144,7 @@ public class CentroVacunacion {
 	    * total de vacunas disponibles no vencidas que coincida con el nombre de
 	    * vacuna especificado.
 	    */
+		//TODO: Â¿Debe eliminar a las vacunas vencidas?
 	    public int vacunasDisponibles(String nombreVacuna) {
 	    	int disponibles = 0;
 	    	Iterator<VacunaCovid19> it = vacunasEnStock.iterator();
@@ -161,9 +172,9 @@ public class CentroVacunacion {
 	    
 	    /**
 	    * Se inscribe una persona en lista de espera.
-	    * Si la persona ya se encuentra inscripta o es menor de 18 años, se debe
-	    * generar una excepción.
-	    * Si la persona ya fue vacunada, también debe generar una excepción.
+	    * Si la persona ya se encuentra inscripta o es menor de 18 aï¿½os, se debe
+	    * generar una excepciï¿½n.
+	    * Si la persona ya fue vacunada, tambiï¿½n debe generar una excepciï¿½n.
 	    */
 	    public void inscribirPersona(int dni, Fecha nacimiento, boolean tienePadecimientos, boolean esEmpleadoSalud) {
 	    	//System.out.println(Fecha.diferenciaAnios(Fecha.hoy(), new Fecha(5, 4, 1964)));
@@ -184,7 +195,7 @@ public class CentroVacunacion {
 	    /**
 	    * Devuelve una lista con los DNI de todos los inscriptos que no se vacunaron
 	    * y que no tienen turno asignado.
-	    * Si no quedan inscriptos sin vacunas debe devolver una lista vacía.
+	    * Si no quedan inscriptos sin vacunas debe devolver una lista vacï¿½a.
 	    */
 	    public java.util.List<Integer> listaDeEspera() {
 	    	ArrayList<Integer> listaEspera = new ArrayList<>();
@@ -194,16 +205,16 @@ public class CentroVacunacion {
 
 	    /**
 	    * Primero se verifica si hay turnos vencidos. En caso de haber turnos
-	    * vencidos, la persona que no asistió al turno debe ser borrada del sistema
+	    * vencidos, la persona que no asistiï¿½ al turno debe ser borrada del sistema
 	    * y la vacuna reservada debe volver a estar disponible.
 	    *
 	    * Segundo, se deben verificar si hay vacunas vencidas y quitarlas del sistema.
 	    *
-	    * Por último, se procede a asignar los turnos a partir de la fecha inicial
-	    * recibida según lo especificado en la 1ra parte.
+	    * Por ï¿½ltimo, se procede a asignar los turnos a partir de la fecha inicial
+	    * recibida segï¿½n lo especificado en la 1ra parte.
 	    * Cada vez que se registra un nuevo turno, la vacuna destinada a esa persona
-	    * dejará de estar disponible. Dado que estará reservada para ser aplicada
-	    * el día del turno.
+	    * dejarï¿½ de estar disponible. Dado que estarï¿½ reservada para ser aplicada
+	    * el dï¿½a del turno.
 	    *
 	    *
 	    */
@@ -217,17 +228,15 @@ public class CentroVacunacion {
 	    	
 	    	/*Verificar vacunas vencidas*/
 	    	verificarVencimientoVacunas();
-	    	
-	    	
+
 	    	/*Generacion de turnos !*/
 	    	/*1er Parte: Division de las personas inscriptas en categorias*/
 	    	HashSet<Persona> trabajadoresSalud = new HashSet<>();
 	    	HashSet<Persona> mayoresDe60 = new HashSet<>();
 	    	HashSet<Persona> conEnfermedadPreexistente = new HashSet<>();
 	    	HashSet<Persona> resto = new HashSet<>();
-	    	
+
 	    	Iterator<Integer> itPersonas = personasSinTurno.keySet().iterator();
-	    	
 	    	while(itPersonas.hasNext()) {
 	    		Persona persona = personasSinTurno.get(itPersonas.next());
 	    		switch (persona.getPrioridad()) {
@@ -239,7 +248,7 @@ public class CentroVacunacion {
 					break;
 				case 3:
 					conEnfermedadPreexistente.add(persona);
-					break;	
+					break;
 
 				default:
 					resto.add(persona);
@@ -261,8 +270,8 @@ public class CentroVacunacion {
 	    	/*2da Parte: Distribucion de los turnos*/
 	    	
 		    /* Cada vez que se registra un nuevo turno, la vacuna destinada a esa persona
-		    * dejará de estar disponible. Dado que estará reservada para ser aplicada
-		    * el día del turno. */
+		    * dejarï¿½ de estar disponible. Dado que estarï¿½ reservada para ser aplicada
+		    * el dï¿½a del turno. */
     	
     		/*Turnos para trabajadores de la salud*/
     	  	Iterator<Persona> itTrabajadores = trabajadoresSalud.iterator();
@@ -273,6 +282,7 @@ public class CentroVacunacion {
     				VacunaCovid19 vacuna = itVacTrabajador.next();
     				if(!(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
     					Fecha fecha = generarFechaTurno(fechaInicial);
+    					fechaInicial = fecha;
     					Turno turno = new Turno(fecha,persona,vacuna);
     					persona.setTurno(turno);
     					persona.setVacuna(vacuna);
@@ -295,6 +305,7 @@ public class CentroVacunacion {
 	    			VacunaCovid19 vacuna = itVacMayores60.next();
 	    			if((vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
     					Fecha fecha = generarFechaTurno(fechaInicial);
+    					fechaInicial = fecha;
     					Turno turno = new Turno(fecha,persona,vacuna);
     					persona.setTurno(turno);
     					persona.setVacuna(vacuna);
@@ -317,6 +328,7 @@ public class CentroVacunacion {
 	    			VacunaCovid19 vacuna = itVacPreexistentes.next();
 	    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
     					Fecha fecha = generarFechaTurno(fechaInicial);
+    					fechaInicial = fecha;
     					Turno turno = new Turno(fecha,persona,vacuna);
     					persona.setTurno(turno);
     					persona.setVacuna(vacuna);
@@ -339,6 +351,7 @@ public class CentroVacunacion {
 	    			VacunaCovid19 vacuna = itVacResto.next();
 	    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
     					Fecha fecha = generarFechaTurno(fechaInicial);
+    					fechaInicial = fecha;
     					Turno turno = new Turno(fecha,persona,vacuna);
     					persona.setTurno(turno);
     					persona.setVacuna(vacuna);
@@ -401,21 +414,23 @@ public class CentroVacunacion {
 			
 		}
 
-		/**Recibe fecha para generar turno, si no hay turnos disponibles se asgina fecha para "mañana"*/
+		//Recibe fecha para generar turno, si no hay turnos disponibles se asgina fecha para "maï¿½ana"
+		//TODO : Genera aliasing, Â¿porque no funciona sin aliasing?
 	    private Fecha generarFechaTurno(Fecha fechaInicial) {
+	    	Fecha fecha = new Fecha(fechaInicial);
 	    	if(turnosPorDia < 1) {
-	    		fechaInicial.avanzarUnDia();
+	    		fecha.avanzarUnDia();
 	    		turnosPorDia = capacidadVacunacionDiaria;
 	    	}
 	    	turnosPorDia--;
-			return new Fecha(fechaInicial);
+	    	return fecha;
 		}
 	    
 		/**
 	    * Devuelve una lista con los dni de las personas que tienen turno asignado
-	    * para la fecha pasada por parámetro.
-	    * Si no hay turnos asignados para ese día, se debe devolver una lista vacía.
-	    * La cantidad de turnos no puede exceder la capacidad por día de la ungs.
+	    * para la fecha pasada por parï¿½metro.
+	    * Si no hay turnos asignados para ese dï¿½a, se debe devolver una lista vacï¿½a.
+	    * La cantidad de turnos no puede exceder la capacidad por dï¿½a de la ungs.
 	    */
 	    public java.util.List<Integer> turnosConFecha(Fecha fecha) {
 	    	ArrayList<Integer> dnis = new ArrayList<>();
@@ -427,29 +442,35 @@ public class CentroVacunacion {
 	    	return dnis;
 	    }
 	    
-	    /*** Dado el DNI de la persona y la fecha de vacunación
-	    * se valida que esté inscripto y que tenga turno para ese dia.
-	    * - Si tiene turno y está inscripto se debe registrar la persona como
-	    * vacunada y la vacuna se quita del depósito.
-	    * - Si no está inscripto o no tiene turno ese día, se genera una Excepcion.
+	    /*** Dado el DNI de la persona y la fecha de vacunaciï¿½n
+	    * se valida que estï¿½ inscripto y que tenga turno para ese dia.
+	    * - Si tiene turno y estï¿½ inscripto se debe registrar la persona como
+	    * vacunada y la vacuna se quita del depï¿½sito.
+	    * - Si no estï¿½ inscripto o no tiene turno ese dï¿½a, se genera una Excepcion.
 	    */
 	    public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
 	    	if(personasConTurno.containsKey(dni)) {
-	    		System.out.println("DNI ::: "+ dni);
 	    		Persona persona = personasConTurno.get(dni);
 	    		if(persona.getTurno().getFecha().equals(fechaVacunacion)) {
-	    			System.out.println(persona.getVacuna().getName());
 	    			personasConTurno.remove(dni);
 	    			personasVacunadas.put(dni, persona);
 	    			vacunasReservadas.remove(persona.getVacuna());
 	    			vacunasAplicadas.add(persona.getVacuna());
-	    			
-	    		} else {throw new RuntimeException("Persona no tiene turno hoy");}
+					liberarUnEspacioFrigorifico(persona.getVacuna());
+				} else {throw new RuntimeException("Persona no tiene turno hoy");}
 
 	    	} else { throw new RuntimeException("Persona no tiene turno");}   	
 	    }
-	    
-	    /**
+	//Metodo auxiliar, libera un espacio en el frigorifico correspondiente
+	private void liberarUnEspacioFrigorifico(VacunaCovid19 vacuna) {
+		if(vacuna.getStoreTemperature() == 3) {
+			frigorifico3Grados.liberarUnEspacio();
+		} else {
+			frigorificoMenos18Grados.liberarUnEspacio();
+		}
+	}
+
+	/**
 	    * Devuelve un Diccionario donde
 	    * - la clave es el dni de las personas vacunadas
 	    * - Y, el valor es el nombre de la vacuna aplicada.

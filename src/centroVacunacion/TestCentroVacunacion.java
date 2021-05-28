@@ -61,13 +61,15 @@ public class TestCentroVacunacion {
 		assertEquals(20, centro.vacunasDisponibles());
 		
 		centro.generarTurnos(fechaInicial);
+
 	
 		
 		assertEquals(0, centro.listaDeEspera().size());
 		assertEquals(12, centro.vacunasDisponibles());
-
+		
+	
 		// son 8 anotados y la capacidad diaria es 5 personas.
-		assertEquals(5, centro.turnosConFecha(new Fecha(2, 7, 2021)).size());
+		assertEquals(5, centro.turnosConFecha(fechaInicial).size());
 		assertEquals(3, centro.turnosConFecha(fechaSiguiente).size());
 		assertEquals(0, centro.turnosConFecha(fechaAnteriorSinTurnos).size());
 		assertEquals(0, centro.turnosConFecha(fechaPosteriorSinTurnos).size());
