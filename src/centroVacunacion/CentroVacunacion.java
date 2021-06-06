@@ -23,10 +23,10 @@ public class CentroVacunacion {
 	    private ArrayList<VacunaCovid19> vacunasReservadas;
 	    private ArrayList<VacunaCovid19> vacunasAplicadas;
 	    private HashMap<String,Integer> vacunasVencidas;
-	    private HashSet<Turno> turnos;
+	    public HashSet<Turno> turnos;
 	    private int capacidadVacunacionDiaria;
 	    private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
-	    private int turnosAsignados;
+	    private int turnosAsignados; // Contador historico de cuantos turnos se han dado.
 	    private Frigorifico frigorifico3Grados;// 3 grados
 	    private Frigorifico frigorificoMenos18Grados;// -18 grados
 	    
@@ -457,6 +457,7 @@ public class CentroVacunacion {
 	    			vacunasReservadas.remove(persona.getVacuna());
 	    			vacunasAplicadas.add(persona.getVacuna());
 					liberarUnEspacioFrigorifico(persona.getVacuna());
+					turnos.remove(persona.getTurno());
 				} else {throw new RuntimeException("Persona no tiene turno hoy");}
 
 	    	} else { throw new RuntimeException("Persona no tiene turno");}   	
