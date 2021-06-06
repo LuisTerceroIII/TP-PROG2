@@ -60,9 +60,9 @@ public class TestCentroVacunacion {
 
 		assertEquals(8, centro.listaDeEspera().size());
 		assertEquals(20, centro.vacunasDisponibles());
-		
+
 		centro.generarTurnos(fechaInicial);
-		
+
 		assertEquals(0, centro.listaDeEspera().size());
 		assertEquals(12, centro.vacunasDisponibles());
 

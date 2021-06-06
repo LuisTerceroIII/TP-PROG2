@@ -13,20 +13,38 @@ import centroVacunacion.vacunas.Pfizer;
 import centroVacunacion.vacunas.Sinopharm;
 import centroVacunacion.vacunas.SputnikV;
 
+
+/*
+ * IREP : 
+ * personasConTurno.size() == turnos.size()
+ * 0 <= turnosPorDia <= capacidadVacunacionDiaria  -> sucede en generarFechaTurno.
+ * 
+ * */
 public class CentroVacunacion {
 	
 	  	private String nombreCentro;
 	 	private HashMap<Integer,Persona> personasSinTurno;
 	 	private HashMap<Integer,Persona> personasConTurno;
 	    private HashMap<Integer,Persona> personasVacunadas; // Cuando se implemente una funcion "vacunar" tomara las personas de la lista personasConTurno y los movera a este conjunto.
-	    private Deposito deposito;
+	    private DepositoVacunas deposito;
 	    private HashMap<String,Integer> vacunasVencidas;
-	    public HashSet<Turno> turnos;
+	    private HashSet<Turno> turnos;
 	    private int capacidadVacunacionDiaria;
 	    private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
 	    private int turnosAsignados; // Contador historico de cuantos turnos se han dado.
+	    
+	    
+	    public HashMap<Integer, Persona> getPersonasSinTurno() {
+			return personasSinTurno;
+		}
+	    
 
-	    /**
+		public HashMap<Integer, Persona> getPersonasConTurno() {
+			return personasConTurno;
+		}
+
+
+		/**
 	    * Constructor.
 	    * recibe el nombre del centro y la capacidad de vacunaci�n diaria.
 	    * Si la capacidad de vacunaci�n no es positiva se debe generar una excepci�n.
@@ -44,7 +62,7 @@ public class CentroVacunacion {
 		    	this.personasSinTurno = new HashMap<>();
 		    	this.personasConTurno = new HashMap<>();
 		    	this.personasVacunadas = new HashMap<>();
-		    	this.deposito = new Deposito();
+		    	this.deposito = new DepositoVacunas(new Frigorifico(3, 50000),new Frigorifico(-18, 50000));
 		    	this.vacunasVencidas = new HashMap<>();
 		    	this.turnos = new HashSet<>();
 		    	this.turnosAsignados = 0;	
@@ -208,16 +226,16 @@ public class CentroVacunacion {
 	    *
 	    */
 	    public void generarTurnos(Fecha fechaInicial) { 
-	    	
 	    	if(fechaInicial.anterior(Fecha.hoy())) {
 	    		throw new RuntimeException("La fecha es anterior a la de hoy !");
 	    	}
+	    	
 	    	/* Verificar turnos vencidos*/
 	    	eliminarTurnosVencidos();
 	    	
 	    	/*Verificar vacunas vencidas*/
 	    	verificarVencimientoVacunas();
-
+	    	
 	    	/*Generacion de turnos !*/
 	    	/*1er Parte: Division de las personas inscriptas en categorias*/
 	    	HashSet<Persona> trabajadoresSalud = new HashSet<>();
@@ -238,131 +256,19 @@ public class CentroVacunacion {
 				case 3:
 					conEnfermedadPreexistente.add(persona);
 					break;
-
 				default:
 					resto.add(persona);
 					break;
 				}
 	    	}
 	    	
-			
-			/*
-			 * System.out.println("Trabajadores : " + trabajadoresSalud);
-			 * System.out.println("Mayores : " + mayoresDe60);
-			 * System.out.println("Enfermos : " + conEnfermedadPreexistente);
-			 * System.out.println("Otros : " + resto);
-			 */
-			 
-	    	
-	    	/* ----------Fin 1er. Parte--------- */
-	    	
 	    	/*2da Parte: Distribucion de los turnos*/
-	    	
-		    /* Cada vez que se registra un nuevo turno, la vacuna destinada a esa persona
-		    * dejar� de estar disponible. Dado que estar� reservada para ser aplicada
-		    * el d�a del turno. */
-    	
-    		/*Turnos para trabajadores de la salud*/
-    	  	Iterator<Persona> itTrabajadores = trabajadoresSalud.iterator();
-	    	while(itTrabajadores.hasNext()) {
-	    		Persona persona = itTrabajadores.next();
-	    		Iterator<VacunaCovid19> itVacTrabajador = deposito.getVacunasEnStock().iterator();
-    			while(itVacTrabajador.hasNext()) {
-    				VacunaCovid19 vacuna = itVacTrabajador.next();
-    				if(!(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-    					Fecha fecha = generarFechaTurno(fechaInicial);
-    					fechaInicial = fecha;
-    					Turno turno = new Turno(fecha,persona,vacuna);
-    					persona.setTurno(turno);
-    					persona.setVacuna(vacuna);
-    					itVacTrabajador.remove();
-    					deposito.getVacunasReservadas().add(vacuna);	    					
-    					personasSinTurno.remove(persona.getDni());
-    					personasConTurno.put(persona.getDni(), persona);
-    					turnos.add(turno);
-    					this.turnosAsignados++;
-    				}
-    			}
-	    	}
-	    	
-	    	/*Turnos para mayores de 60*/
-	    	Iterator<Persona> itMayores60 = mayoresDe60.iterator();
-	    	while(itMayores60.hasNext()) {
-	    		Persona persona = itMayores60.next();
-	    		Iterator<VacunaCovid19> itVacMayores60 = deposito.getVacunasEnStock().iterator();
-	    		while(itVacMayores60.hasNext()) {
-	    			VacunaCovid19 vacuna = itVacMayores60.next();
-	    			if((vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-    					Fecha fecha = generarFechaTurno(fechaInicial);
-    					fechaInicial = fecha;
-    					Turno turno = new Turno(fecha,persona,vacuna);
-    					persona.setTurno(turno);
-    					persona.setVacuna(vacuna);
-    					itVacMayores60.remove();
-    					deposito.getVacunasReservadas().add(vacuna);	    					
-    					personasSinTurno.remove(persona.getDni());
-    					personasConTurno.put(persona.getDni(), persona);
-    					turnos.add(turno);
-    					this.turnosAsignados++;
-    				}
-	    		}    		
-	    	}
-	    	
-	    	/*Turnos para personas con enfermedad preexistente*/
-	    	Iterator<Persona> itPreexistente = conEnfermedadPreexistente.iterator();
-	    	while(itPreexistente.hasNext()) {
-	    		Persona persona = itPreexistente.next();
-	    		Iterator<VacunaCovid19> itVacPreexistentes = deposito.getVacunasEnStock().iterator();
-	    		while(itVacPreexistentes.hasNext()) {
-	    			VacunaCovid19 vacuna = itVacPreexistentes.next();
-	    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-    					Fecha fecha = generarFechaTurno(fechaInicial);
-    					fechaInicial = fecha;
-    					Turno turno = new Turno(fecha,persona,vacuna);
-    					persona.setTurno(turno);
-    					persona.setVacuna(vacuna);
-    					itVacPreexistentes.remove();
-    					deposito.getVacunasReservadas().add(vacuna);	    					
-    					personasSinTurno.remove(persona.getDni());
-    					personasConTurno.put(persona.getDni(), persona);
-    					turnos.add(turno);
-    					this.turnosAsignados++;
-    				}
-	    		} 
-	    		
-	    	}
-	    	/*Turnos para todos los demas*/
-	    	Iterator<Persona> itResto = resto.iterator();
-	    	while(itResto.hasNext()) {
-	    		Persona persona = itResto.next();
-	    		Iterator<VacunaCovid19> itVacResto = deposito.getVacunasEnStock().iterator();
-	    		while(itVacResto.hasNext()) {
-	    			VacunaCovid19 vacuna = itVacResto.next();
-	    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-    					Fecha fecha = generarFechaTurno(fechaInicial);
-    					fechaInicial = fecha;
-    					Turno turno = new Turno(fecha,persona,vacuna);
-    					persona.setTurno(turno);
-    					persona.setVacuna(vacuna);
-    					itVacResto.remove();
-    					deposito.getVacunasReservadas().add(vacuna);	    					
-    					personasSinTurno.remove(persona.getDni());
-    					personasConTurno.put(persona.getDni(), persona);
-    					turnos.add(turno);
-    					this.turnosAsignados++;
-    				}
-	    		}
-	    		
-	    	}
-			/*
-			 * System.out.println("SALUD : " + trabajadoresSalud.size());
-			 * System.out.println("MAYOR 60 : " + mayoresDe60.size());
-			 * System.out.println("ENFERMOS : " + conEnfermedadPreexistente.size());
-			 * System.out.println("RESTO : " + resto.size());
-			 */
-	    	
-	    }/*Retorna fecha usada para asignar turnos. Si no quedan turnos asgina fecha el dia siguiente.*/
-	    
+			fechaInicial = asignarTurnos(trabajadoresSalud,fechaInicial);
+			fechaInicial = asignarTurnos(mayoresDe60,fechaInicial);
+			fechaInicial = asignarTurnos(conEnfermedadPreexistente,fechaInicial);
+			fechaInicial = asignarTurnos(resto,fechaInicial);
+	    }
+    
 	    private void verificarVencimientoVacunas() {
 	    	Iterator<VacunaCovid19> itVacunas = deposito.getVacunasEnStock().iterator();
 	    	while(itVacunas.hasNext()) {
@@ -413,6 +319,48 @@ public class CentroVacunacion {
 	    	turnosPorDia--;
 	    	return fecha;
 		}
+	    
+	    private Fecha asignarTurnos(HashSet<Persona> grupo,Fecha fechaInicial) {
+    	  	Iterator<Persona> itGrupo = grupo.iterator();
+	    	while(itGrupo.hasNext()) {
+	    		Persona persona = itGrupo.next();
+	    		Iterator<VacunaCovid19> itVacunas = deposito.getVacunasEnStock().iterator();
+	    		
+	    		while(itVacunas.hasNext()) {
+	    			VacunaCovid19 vacuna = itVacunas.next();
+	    			if(persona.getPrioridad() == 2) {
+	    				if((vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
+	    					Fecha fecha = generarFechaTurno(fechaInicial);
+	    					fechaInicial = fecha;
+	    					Turno turno = new Turno(fecha,persona,vacuna);
+	    					persona.setTurno(turno);
+	    					itVacunas.remove();
+	    					deposito.getVacunasReservadas().add(vacuna);	    					
+	    					personasSinTurno.remove(persona.getDni());
+	    					personasConTurno.put(persona.getDni(), persona);
+	    					turnos.add(turno);
+	    					this.turnosAsignados++;
+	    				}
+	    			} else {
+		    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
+	    					Fecha fecha = generarFechaTurno(fechaInicial);
+	    					fechaInicial = fecha;
+	    					Turno turno = new Turno(fecha,persona,vacuna);
+	    					persona.setTurno(turno);
+	    					itVacunas.remove();
+	    					deposito.getVacunasReservadas().add(vacuna);	    					
+	    					personasSinTurno.remove(persona.getDni());
+	    					personasConTurno.put(persona.getDni(), persona);
+	    					turnos.add(turno);
+	    					this.turnosAsignados++;
+	    				}
+	    			}
+	    		}   
+	    	}
+	    	return fechaInicial;
+	    } 
+	    
+	    
 	    
 		/**
 	    * Devuelve una lista con los dni de las personas que tienen turno asignado

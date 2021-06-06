@@ -1,6 +1,9 @@
 package centroVacunacion;
 
-
+/*
+ * IREP:
+ * persona.getVacuna().equals(vacuna) == true;
+ * */
 public class Turno {
 
     private Fecha fecha;
@@ -15,9 +18,11 @@ public class Turno {
     }
     public void asignarPersona(Persona persona) {
         this.persona = persona;
+        this.vacuna = persona.getVacuna();
     }
     public void asignarVacuna(VacunaCovid19 vacuna) {
         this.vacuna = vacuna;
+        persona.setVacuna(vacuna);
     }
     public void asignarFecha(Fecha fecha) {
         this.fecha = fecha;

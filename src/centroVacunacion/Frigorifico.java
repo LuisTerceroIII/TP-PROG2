@@ -1,5 +1,10 @@
 package centroVacunacion;
-
+/*
+ * IREP:
+ * -25 <= temperaturaAlamacenamiento <= 5
+ * 10.000 <= capacidadMaximaAlmacenamiento <= 50.000
+ * 0 <= espaciosOcupados <= capacidadMaximaAlmacenamiento
+ * */
 public class Frigorifico {
 	
 	private int temperaturaAlamacenamiento;
@@ -7,8 +12,8 @@ public class Frigorifico {
 	private int espaciosOcupados;
 	
 	public Frigorifico(int temperaturaAlamacenamiento, int capacidadMaximaAlmacenamiento) {
-		this.temperaturaAlamacenamiento = temperaturaAlamacenamiento;
-		this.capacidadMaximaAlmacenamiento = capacidadMaximaAlmacenamiento;
+		this.setTemperaturaAlamacenamiento(temperaturaAlamacenamiento);
+		this.setCapacidadMaximaAlmacenamiento(capacidadMaximaAlmacenamiento);
 		this.espaciosOcupados = 0;
 	}
 	//Retorna verdadero si hay espacio para almacenar
@@ -35,6 +40,9 @@ public class Frigorifico {
 	}
 
 	public void setTemperaturaAlamacenamiento(int temperaturaAlamacenamiento) {
+		if(temperaturaAlamacenamiento < -25 || temperaturaAlamacenamiento > 5) {
+			throw new RuntimeException("Temperatura invalida, intente entre -25 y 5 grados");
+		}
 		this.temperaturaAlamacenamiento = temperaturaAlamacenamiento;
 	}
 
@@ -43,7 +51,17 @@ public class Frigorifico {
 	}
 
 	public void setCapacidadMaximaAlmacenamiento(int capacidadMaximaAlmacenamiento) {
+		if(capacidadMaximaAlmacenamiento > 50000) {
+			throw new RuntimeException("Capacidad maxima no disponible ; min : 10.000, max: 50.000");
+		}
+		if(capacidadMaximaAlmacenamiento < 10000) {
+			throw new RuntimeException("Capacidad maxima no disponible ; min : 10.000, max: 50.000");
+		}
 		this.capacidadMaximaAlmacenamiento = capacidadMaximaAlmacenamiento;
+	}
+	
+	public int getEspaciosOcupados() {
+		return espaciosOcupados;
 	}
 
 	@Override

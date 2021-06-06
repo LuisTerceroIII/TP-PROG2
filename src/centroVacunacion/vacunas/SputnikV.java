@@ -3,13 +3,22 @@ package centroVacunacion.vacunas;
 import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
+/*
+ * temperaturaAlmacenaje == 3
+ * exclusivaMayores60 == true
+ * */
 public class SputnikV extends VacunaCovid19 {
 
 	public SputnikV(Fecha fechaIngreso) {
 		super(fechaIngreso);
 		super.setName("Sputnik");
 		super.setExclusivaMayores60(true);
-		super.setStoreTemperature(3);
+		setTemperaturaAlmacenaje(3);
+	}
+	@Override
+	public void setTemperaturaAlmacenaje(int temperatura) {
+		if(temperatura != 3) throw new RuntimeException("Sputnik V debe almacenarse a 3 grados");
+		this.temperaturaAlmacenaje = temperatura;
 	}
 	
 }

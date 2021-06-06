@@ -3,6 +3,10 @@ package centroVacunacion.vacunas;
 import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
+/*
+ * temperaturaAlmacenaje == -18
+ *  exclusivaMayores60 == true
+ * */
 public class Pfizer extends VacunaCovid19 {
 	
     private Fecha fechaVencimiento;
@@ -13,7 +17,12 @@ public class Pfizer extends VacunaCovid19 {
 		super.setName("Pfizer");
 		super.setExclusivaMayores60(true);
 		setFechaVencimiento(fechaIngreso);
-		super.setStoreTemperature(-18);
+		setTemperaturaAlmacenaje(-18);
+	}
+	@Override
+	public void setTemperaturaAlmacenaje(int temperatura) {
+		if(temperatura != -18) throw new RuntimeException("Pfizer debe almacenarse a -18 grados");
+		this.temperaturaAlmacenaje = temperatura;
 	}
 	
 
@@ -45,7 +54,7 @@ public class Pfizer extends VacunaCovid19 {
 		result = prime * result + ((super.getFechaIngreso() == null) ? 0 : super.getFechaIngreso().hashCode());
 		result = prime * result + ((getFechaVencimiento() == null) ? 0 : fechaVencimiento.hashCode());
 		result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-		result = prime * result + getStoreTemperature();
+		result = prime * result + getTemperaturaAlmacenaje();
 		return result;
 	}
 
@@ -75,7 +84,7 @@ public class Pfizer extends VacunaCovid19 {
 				return false;
 		} else if (!getName().equals(other.getName()))
 			return false;
-		if (getStoreTemperature() != other.getStoreTemperature())
+		if (getTemperaturaAlmacenaje() != other.getTemperaturaAlmacenaje())
 			return false;
 		return true;
 	}
