@@ -261,7 +261,6 @@ public class CentroVacunacion {
 					break;
 				}
 	    	}
-	    	/* ----------Fin 1er. Parte--------- */
 	    	
 	    	/*2da Parte: Distribucion de los turnos*/
 			fechaInicial = asignarTurnos(trabajadoresSalud,fechaInicial);
@@ -269,9 +268,7 @@ public class CentroVacunacion {
 			fechaInicial = asignarTurnos(conEnfermedadPreexistente,fechaInicial);
 			fechaInicial = asignarTurnos(resto,fechaInicial);
 	    }
-	    
-	    
-	 
+    
 	    private void verificarVencimientoVacunas() {
 	    	Iterator<VacunaCovid19> itVacunas = deposito.getVacunasEnStock().iterator();
 	    	while(itVacunas.hasNext()) {
