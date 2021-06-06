@@ -1,8 +1,12 @@
 package centroVacunacion;
 
+/*
+ * -25 <= temperaturaAlmacenaje <= 5  -> En relacion a los frigorificos.
+ * 
+ * */
 public abstract class VacunaCovid19 {
     private String name;
-    private int storeTemperature;
+    protected int temperaturaAlmacenaje;
     private boolean exclusivaMayores60;
     private Fecha fechaIngreso;
     
@@ -19,12 +23,17 @@ public abstract class VacunaCovid19 {
         this.name = name;
     }
 
-    public int getStoreTemperature() {
-        return storeTemperature;
+    public int getTemperaturaAlmacenaje() {
+        return temperaturaAlmacenaje;
     }
 
-    public void setStoreTemperature(int storeTemperature) {
-        this.storeTemperature = storeTemperature;
+    public void setTemperaturaAlmacenaje(int temperaturaAlmacenaje) {
+    	if(-25 <= temperaturaAlmacenaje && temperaturaAlmacenaje <= 5) {
+    		this.temperaturaAlmacenaje = temperaturaAlmacenaje;
+    	} else {
+    		throw new RuntimeException("Temperatura de almacenaje no disponible");
+    	}
+        
     }
     
 	public Fecha getFechaIngreso() {
@@ -47,7 +56,7 @@ public abstract class VacunaCovid19 {
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Vacuna Nombre : ").append(name)
-    	.append(", Temperatura de almacenaje : ").append(storeTemperature)
+    	.append(", Temperatura de almacenaje : ").append(temperaturaAlmacenaje)
     	.append(", Fecha de ingreso : ").append(fechaIngreso);
     	
         return sb.toString();
@@ -60,7 +69,7 @@ public abstract class VacunaCovid19 {
 		result = prime * result + (exclusivaMayores60 ? 1231 : 1237);
 		result = prime * result + ((fechaIngreso == null) ? 0 : fechaIngreso.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + storeTemperature;
+		result = prime * result + temperaturaAlmacenaje;
 		return result;
 	}
 
@@ -85,7 +94,7 @@ public abstract class VacunaCovid19 {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (storeTemperature != other.storeTemperature)
+		if (temperaturaAlmacenaje != other.temperaturaAlmacenaje)
 			return false;
 		return true;
 	}

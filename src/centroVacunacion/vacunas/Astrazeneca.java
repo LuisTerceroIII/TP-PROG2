@@ -3,6 +3,11 @@ package centroVacunacion.vacunas;
 import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
+
+/*
+ * temperaturaAlmacenaje == 3
+ *  exclusivaMayores60 == false
+ * */
 public class Astrazeneca extends VacunaCovid19 {
 
         
@@ -10,8 +15,16 @@ public class Astrazeneca extends VacunaCovid19 {
 		super(fechaIngreso);
 		super.setName("AstraZeneca");
 		super.setExclusivaMayores60(false);
-		super.setStoreTemperature(3);
+		setTemperaturaAlmacenaje(3);
 	}
+	
+	@Override
+	public void setTemperaturaAlmacenaje(int temperatura) {
+		if(temperatura != 3) throw new RuntimeException("Aztrazeneca debe almacenarse a 3 grados");
+		this.temperaturaAlmacenaje = temperatura;
+	}
+	
+	
     
     
 }

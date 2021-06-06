@@ -1,5 +1,14 @@
 package centroVacunacion;
 
+
+/*
+ * IREP : 
+ * 	7 <= dni.toString().length() <= 9  -> reconoce numeros apartir de 1 millon, hasta 100 millones.
+ * 18 <= edad <= 200
+ * 1 <= prioridad <= 4
+ * turno.getVacuna().equals(vacuna) == true
+ * 
+ * */
 public class Persona {
     private int dni;
     private int edad;
@@ -10,8 +19,8 @@ public class Persona {
     private Turno turno;
 
     public Persona(int dni, int edad, boolean trabajadorSalud, boolean enfermedadPreexistente) {
-        this.dni = dni;
-        this.edad = edad;
+    	this.setDni(dni);
+    	this.setEdad(edad);
         this.trabajadorSalud = trabajadorSalud;
         this.enfermedadPreexistente = enfermedadPreexistente;
         this.vacuna = null;
@@ -46,7 +55,6 @@ public class Persona {
 		} else if(this.getEdad() > 60) {
 			return 2;
 		}
-		
 		else if(this.isEnfermedadPreexistente()) {
 			return 3;
 		} else {
@@ -58,13 +66,26 @@ public class Persona {
         return dni;
     }
     public void setDni(int dni) {
-        this.dni = dni;
+    	int lenDNI = String.valueOf(dni).length();
+    	if(lenDNI >= 7 && lenDNI <= 9 ) {
+    		this.dni = dni;
+    	} else {
+    		throw new RuntimeException("DNI invalido, verifique y vuelva a ingresar.");
+    	}
+        
     }
     public int getEdad() {
         return edad;
     }
+    
+    //Si bien lo que me importa es que sea mayor de edad, le pongo el limite de 200 por sentido comun.
     public void setEdad(int edad) {
-        this.edad = edad;
+    	if( edad >= 18 && edad <= 200) {
+    		this.edad = edad;
+    	} else {
+    		throw new RuntimeException("Edad invalida, solo mayores de 18");
+    	}
+        
     }
     public boolean isTrabajadorSalud() {
         return trabajadorSalud;
@@ -83,23 +104,29 @@ public class Persona {
 		return vacuna;
 	}
 	public void setVacuna(VacunaCovid19 vacuna) {
-		this.vacuna = vacuna;
+		if(turno != null) {
+			this.vacuna = vacuna;
+			turno.asignarVacuna(vacuna);
+		}
 	}
+
 	public Turno getTurno() {
 		return turno;
 	}
+	
+	//Dado que la vacuna solo se puede obtener por medio de un turno, elegi hacerlo asi, se asigna una vacuna cuando se asigne un turno.
 	public void setTurno(Turno turno) {
+		this.vacuna = turno.getVacuna();
 		this.turno = turno;
 	}
 	@Override
 	public String toString() {
-		
 		return new StringBuilder()
 				.append("Persona [ DNI :").append(dni)
 				.append(", Edad :").append(edad)
 				.append(", Trabajador de la salud : ").append(trabajadorSalud)
 				.append(", Enfermedad Preexistente : ").append(enfermedadPreexistente)
-				.append(", Vacuna : ").append(vacuna != null ? vacuna : "" )
+				.append(", Vacuna : ").append(vacuna != null ? vacuna.getName() : "" )
 				.append(", Turno : ").append(turno != null ? turno.getFecha() : "").append(" ]").toString();
 	}
     

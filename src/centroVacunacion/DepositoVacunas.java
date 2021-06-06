@@ -1,8 +1,11 @@
 package centroVacunacion;
 
 import java.util.ArrayList;
-
-public class Deposito {
+/*
+ * vacunasEnStock.size() + vacunasReservadas.size() == frigorificoA.getEspaciosOcupados() + frigorificoB.getEspaciosOcupados() 
+ * 
+ * */
+public class DepositoVacunas {
 	
 	 	private ArrayList<VacunaCovid19> vacunasEnStock;
 	    private ArrayList<VacunaCovid19> vacunasReservadas;
@@ -10,17 +13,17 @@ public class Deposito {
 	    private Frigorifico frigorificoA;// 3 grados
 	    private Frigorifico frigorificoB;// -18 grados
 	    
-	    public Deposito() {
+	    public DepositoVacunas(Frigorifico fA, Frigorifico fB) {
 	    	this.vacunasEnStock = new ArrayList<>();
 	    	this.vacunasReservadas = new ArrayList<>();
 	    	this.vacunasAplicadas = new ArrayList<>();
-	    	this.frigorificoA = new Frigorifico(3, 50000);
-            this.frigorificoB = new Frigorifico(-18, 50000);
+	    	this.frigorificoA = fA;
+            this.frigorificoB = fB;
 	    }
 	    
 	    public void almacenar(String vacuna) {
 	    	String nombreVacuna = vacuna.toUpperCase();
-	    	switch (nombreVacuna.toUpperCase()) {
+	    	switch (nombreVacuna) {
 			case "ASTRAZENECA":
 				this.frigorificoA.almacenar();
 				break;
@@ -43,9 +46,9 @@ public class Deposito {
 
 		//Libera un espacio en el frigorifico correspondiente
 		public  void liberarUnEspacioFrigorifico(VacunaCovid19 vacuna) {
-			if(vacuna.getStoreTemperature() == 3) {
+			if(vacuna.getTemperaturaAlmacenaje() == frigorificoA.getTemperaturaAlamacenamiento()) {
 				frigorificoA.liberarUnEspacio();
-			} else {
+			} else if(vacuna.getTemperaturaAlmacenaje() == frigorificoB.getTemperaturaAlamacenamiento()) {
 				frigorificoB.liberarUnEspacio();
 			}
 		}
