@@ -20,6 +20,7 @@ public class Frigorifico {
 	public boolean espacioLibre() {
 		return capacidadMaximaAlmacenamiento - espaciosOcupados > 0;
 	}
+
 	public void almacenar() {
 		if(espacioLibre()) {
 			espaciosOcupados++;
@@ -27,6 +28,7 @@ public class Frigorifico {
 			throw new RuntimeException("No hay espacio en el frigorifico");
 		}
 	}
+
 	public void liberarUnEspacio() {
 		if(espaciosOcupados <= 0 ) {
 			throw new RuntimeException("Frigorifico vacio");

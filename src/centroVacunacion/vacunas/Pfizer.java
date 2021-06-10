@@ -11,7 +11,6 @@ public class Pfizer extends VacunaCovid19 {
 	
     private Fecha fechaVencimiento;
 
-    
 	public Pfizer(Fecha fechaIngreso) {
 		super(fechaIngreso);
 		super.setNombre("Pfizer");
@@ -24,7 +23,6 @@ public class Pfizer extends VacunaCovid19 {
 		if(temperatura != -18) throw new RuntimeException("Pfizer debe almacenarse a -18 grados");
 		this.temperaturaAlmacenaje = temperatura;
 	}
-	
 
 	private void setFechaVencimiento(Fecha fechaIngreso) {
 		this.fechaVencimiento = new Fecha(fechaIngreso);

@@ -46,6 +46,7 @@ public class DepositoVacunas {
 				frigorificoB.liberarUnEspacio();
 			}
 		}
+
 		public ArrayList<VacunaCovid19> getVacunasEnStock() {
 			return vacunasEnStock;
 		}
@@ -58,11 +59,11 @@ public class DepositoVacunas {
 			return vacunasAplicadas;
 		}
 
-		public Frigorifico getFrigorifico3Grados() {
+		public Frigorifico getFrigorificoA() {
 			return frigorificoA;
 		}
 
-		public Frigorifico getFrigorificoMenos18Grados() {
+		public Frigorifico getFrigorificoB() {
 			return frigorificoB;
 		}
 
