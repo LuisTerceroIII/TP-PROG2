@@ -13,31 +13,25 @@ public class DepositoVacunas {
 	    private Frigorifico frigorificoA;// 3 grados
 	    private Frigorifico frigorificoB;// -18 grados
 	    
-	    public DepositoVacunas(Frigorifico fA, Frigorifico fB) {
+	    public DepositoVacunas() {
 	    	this.vacunasEnStock = new ArrayList<>();
 	    	this.vacunasReservadas = new ArrayList<>();
 	    	this.vacunasAplicadas = new ArrayList<>();
-	    	this.frigorificoA = fA;
-            this.frigorificoB = fB;
+	    	this.frigorificoA = new Frigorifico(3, 50000);
+            this.frigorificoB = new Frigorifico(-18, 50000);
 	    }
 	    
 	    public void almacenar(String vacuna) {
 	    	String nombreVacuna = vacuna.toUpperCase();
 	    	switch (nombreVacuna) {
 			case "ASTRAZENECA":
+			case "SINOPHARM":
+			case "SPUTNIK":
 				this.frigorificoA.almacenar();
 				break;
 			case "MODERNA":
-				this.frigorificoB.almacenar();
-				break;
 			case "PFIZER":
 				this.frigorificoB.almacenar();
-				break;
-			case "SINOPHARM":
-				this.frigorificoA.almacenar();
-				break;
-			case "SPUTNIK":
-				this.frigorificoA.almacenar();
 				break;
 			default:
 				throw new RuntimeException("Vacuna no se reconoce");
