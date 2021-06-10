@@ -6,6 +6,7 @@ import centroVacunacion.VacunaCovid19;
 /*
  * temperaturaAlmacenaje == -18
  *  exclusivaMayores60 == true
+ * fechaIngreso.compareTo(fechaVencimiento) < 0 SIEMPRE
  * */
 public class Pfizer extends VacunaCovid19 {
 	

@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import centroVacunacion.vacunas.Moderna;
-import centroVacunacion.vacunas.Pfizer;
 
 public class TestCentroVacunacion {
 	CentroVacunacion centro;
