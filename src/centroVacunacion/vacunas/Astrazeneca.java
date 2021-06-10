@@ -1,6 +1,5 @@
 package centroVacunacion.vacunas;
 
-import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
 
@@ -11,8 +10,7 @@ import centroVacunacion.VacunaCovid19;
 public class Astrazeneca extends VacunaCovid19 {
 
         
-	public Astrazeneca( Fecha fechaIngreso) {
-		super(fechaIngreso);
+	public Astrazeneca() {
 		super.setNombre("AstraZeneca");
 		super.setExclusivaMayores60(false);
 		setTemperaturaAlmacenaje(3);

@@ -64,7 +64,7 @@ public class CentroVacunacion {
 	    	switch (nombreVacuna.toUpperCase()) {
 			case "ASTRAZENECA":
 				for (int i = 0; i < cantidad ; i++) {
-					deposito.getVacunasEnStock().add(new Astrazeneca(fechaIngreso));
+					deposito.getVacunasEnStock().add(new Astrazeneca());
 					deposito.almacenar("ASTRAZENECA");
 				}
 				break;
@@ -85,14 +85,14 @@ public class CentroVacunacion {
 				
 			case "SINOPHARM":
 				for (int i = 0; i < cantidad ; i++) {
-					deposito.getVacunasEnStock().add(new Sinopharm(fechaIngreso));
+					deposito.getVacunasEnStock().add(new Sinopharm());
 					deposito.almacenar("SINOPHARM");
 				}
 				break;
 				
 			case "SPUTNIK":
 				for (int i = 0; i < cantidad ; i++) {
-					deposito.getVacunasEnStock().add(new SputnikV(fechaIngreso));
+					deposito.getVacunasEnStock().add(new SputnikV());
 					deposito.almacenar("SPUTNIK");
 				}
 				break;
@@ -331,7 +331,7 @@ public class CentroVacunacion {
 	    * - Si tiene turno y esta inscripto se registrar la persona como vacunada y la vacuna se quita del deposito.
 	    * - Si no esta inscripto o no tiene turno ese dia, se genera una Excepcion.
 	    */
-			public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
+		public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
 	    	if(personasConTurno.containsKey(dni)) {
 	    		Persona persona = personasConTurno.get(dni);
 	    		if(persona.getTurno().getFecha().equals(fechaVacunacion)) {

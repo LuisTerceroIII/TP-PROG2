@@ -9,11 +9,12 @@ import centroVacunacion.VacunaCovid19;
  * */
 public class Moderna extends VacunaCovid19 {
 	
+	private Fecha fechaIngreso;
     private Fecha fechaVencimiento;
 
     
 	public Moderna(Fecha fechaIngreso) {
-		super(fechaIngreso);
+		this.fechaIngreso = fechaIngreso;
 		super.setNombre("Moderna");
 		super.setExclusivaMayores60(false);
 		setFechaVencimiento(fechaIngreso);
@@ -23,6 +24,14 @@ public class Moderna extends VacunaCovid19 {
 	public void setTemperaturaAlmacenaje(int temperatura) {
 		if(temperatura != -18) throw new RuntimeException("Moderna debe almacenarse a -18 grados");
 		this.temperaturaAlmacenaje = temperatura;
+	}
+	
+	public Fecha getFechaIngreso() {
+		return fechaIngreso;
+	}
+
+	public void setFechaIngreso(Fecha fechaIngreso) {
+		this.fechaIngreso = fechaIngreso;
 	}
 	
 	private void setFechaVencimiento(Fecha fechaIngreso) {
@@ -43,7 +52,7 @@ public class Moderna extends VacunaCovid19 {
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder(super.toString());
-    	sb.append(", Fecha de Vencimiento : ").append(fechaVencimiento);
+    	sb.append("Fecha de ingreso : ").append(fechaIngreso).append(", Fecha de Vencimiento : ").append(fechaVencimiento);
         return sb.toString();
     }
 
@@ -52,7 +61,7 @@ public class Moderna extends VacunaCovid19 {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (isExclusivaMayores60() ? 1231 : 1237);
-		result = prime * result + ((super.getFechaIngreso() == null) ? 0 : super.getFechaIngreso().hashCode());
+		result = prime * result + ((getFechaIngreso() == null) ? 0 : getFechaIngreso().hashCode());
 		result = prime * result + ((getFechaVencimiento() == null) ? 0 : fechaVencimiento.hashCode());
 		result = prime * result + ((getNombre() == null) ? 0 : getNombre().hashCode());
 		result = prime * result + getTemperaturaAlmacenaje();

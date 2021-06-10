@@ -9,10 +9,11 @@ import centroVacunacion.VacunaCovid19;
  * */
 public class Pfizer extends VacunaCovid19 {
 	
+	private Fecha fechaIngreso;
     private Fecha fechaVencimiento;
 
 	public Pfizer(Fecha fechaIngreso) {
-		super(fechaIngreso);
+		this.fechaIngreso = fechaIngreso;
 		super.setNombre("Pfizer");
 		super.setExclusivaMayores60(true);
 		setFechaVencimiento(fechaIngreso);
@@ -32,6 +33,14 @@ public class Pfizer extends VacunaCovid19 {
 	public Fecha getFechaVencimiento() {
 		return fechaVencimiento;
 	}
+	
+	public Fecha getFechaIngreso() {
+		return fechaIngreso;
+	}
+
+	public void setFechaIngreso(Fecha fechaIngreso) {
+		this.fechaIngreso = fechaIngreso;
+	}
 	public boolean estaVencida() {
 		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
 	}
@@ -39,7 +48,7 @@ public class Pfizer extends VacunaCovid19 {
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder(super.toString());
-    	sb.append(", Fecha de Vencimiento : ").append(fechaVencimiento);
+    	sb.append("Fecha de ingreso : ").append(fechaIngreso).append(", Fecha de Vencimiento : ").append(fechaVencimiento);
         return sb.toString();
     }
     
@@ -49,7 +58,7 @@ public class Pfizer extends VacunaCovid19 {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (isExclusivaMayores60() ? 1231 : 1237);
-		result = prime * result + ((super.getFechaIngreso() == null) ? 0 : super.getFechaIngreso().hashCode());
+		result = prime * result + ((getFechaIngreso() == null) ? 0 : getFechaIngreso().hashCode());
 		result = prime * result + ((getFechaVencimiento() == null) ? 0 : fechaVencimiento.hashCode());
 		result = prime * result + ((getNombre() == null) ? 0 : getNombre().hashCode());
 		result = prime * result + getTemperaturaAlmacenaje();

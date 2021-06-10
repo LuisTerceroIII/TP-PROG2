@@ -1,6 +1,5 @@
 package centroVacunacion.vacunas;
 
-import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
 /*
@@ -9,8 +8,7 @@ import centroVacunacion.VacunaCovid19;
  * */
 public class Sinopharm extends VacunaCovid19 {
 
-	public Sinopharm(Fecha fechaIngreso) {
-		super(fechaIngreso);
+	public Sinopharm() {
 		super.setNombre("Sinopharm");
 		super.setExclusivaMayores60(false);
 		setTemperaturaAlmacenaje(3);

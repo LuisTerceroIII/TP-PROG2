@@ -1,6 +1,5 @@
 package centroVacunacion.vacunas;
 
-import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
 /*
@@ -9,8 +8,7 @@ import centroVacunacion.VacunaCovid19;
  * */
 public class SputnikV extends VacunaCovid19 {
 
-	public SputnikV(Fecha fechaIngreso) {
-		super(fechaIngreso);
+	public SputnikV() {
 		super.setNombre("Sputnik");
 		super.setExclusivaMayores60(true);
 		setTemperaturaAlmacenaje(3);
