@@ -45,7 +45,7 @@ public class Turno {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Turno [ Fecha : " ).append(fecha)
 		.append(", Persona : DNI : ").append(persona.getDni())
-		.append(", Vacuna : ").append(vacuna.getName())
+		.append(", Vacuna : ").append(vacuna.getNombre())
 		.append(" ]");
 		return sb.toString();
 	}

@@ -13,7 +13,7 @@ public class Astrazeneca extends VacunaCovid19 {
         
 	public Astrazeneca( Fecha fechaIngreso) {
 		super(fechaIngreso);
-		super.setName("AstraZeneca");
+		super.setNombre("AstraZeneca");
 		super.setExclusivaMayores60(false);
 		setTemperaturaAlmacenaje(3);
 	}

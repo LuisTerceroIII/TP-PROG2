@@ -132,7 +132,7 @@ public class CentroVacunacion {
 	    	Iterator<VacunaCovid19> it = deposito.getVacunasEnStock().iterator();
 	    	while(it.hasNext()) {
 	    		VacunaCovid19 vacuna = it.next();
-	    		if(vacuna.getName().toUpperCase().equals(nombreVacuna.toUpperCase()) ) {
+	    		if(vacuna.getNombre().toUpperCase().equals(nombreVacuna.toUpperCase()) ) {
 	    			disponibles++;
 	    			if(vacuna instanceof Pfizer) {
 	    				Pfizer pfizer = (Pfizer) vacuna;
@@ -230,17 +230,17 @@ public class CentroVacunacion {
 	    			Pfizer pfizer = (Pfizer) vacuna;
 	    			if(pfizer.estaVencida()) {
 	    				itVacunas.remove();
-	    				Integer cantVencidas = vacunasVencidas.get(pfizer.getName());
+	    				Integer cantVencidas = vacunasVencidas.get(pfizer.getNombre());
 	    				cantVencidas++;
-	    				vacunasVencidas.put(pfizer.getName(), cantVencidas);
+	    				vacunasVencidas.put(pfizer.getNombre(), cantVencidas);
 	    			} 
 	    		} else if(vacuna instanceof Moderna) {
 	    			Moderna moderna = (Moderna) vacuna;
 	    			if(moderna.estaVencida()) {
 	    				itVacunas.remove();
-	    				Integer cantVencidas = vacunasVencidas.get(moderna.getName());
+	    				Integer cantVencidas = vacunasVencidas.get(moderna.getNombre());
 	    				cantVencidas++;
-	    				vacunasVencidas.put(moderna.getName(), cantVencidas);
+	    				vacunasVencidas.put(moderna.getNombre(), cantVencidas);
 	    			}
 	    		}
 	    	}		
@@ -331,7 +331,7 @@ public class CentroVacunacion {
 	    * - Si tiene turno y esta inscripto se registrar la persona como vacunada y la vacuna se quita del deposito.
 	    * - Si no esta inscripto o no tiene turno ese dia, se genera una Excepcion.
 	    */
-	    public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
+			public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
 	    	if(personasConTurno.containsKey(dni)) {
 	    		Persona persona = personasConTurno.get(dni);
 	    		if(persona.getTurno().getFecha().equals(fechaVacunacion)) {
@@ -353,7 +353,7 @@ public class CentroVacunacion {
 	    	HashMap<Integer,String> vacunados = new HashMap<>();
 			for (Integer integer : personasVacunadas.keySet()) {
 				Persona persona = personasVacunadas.get(integer);
-				vacunados.put(persona.getDni(), persona.getVacuna().getName());
+				vacunados.put(persona.getDni(), persona.getVacuna().getNombre());
 			}
 	    	return vacunados;
 	    }

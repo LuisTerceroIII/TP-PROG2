@@ -11,7 +11,7 @@ public class Sinopharm extends VacunaCovid19 {
 
 	public Sinopharm(Fecha fechaIngreso) {
 		super(fechaIngreso);
-		super.setName("Sinopharm");
+		super.setNombre("Sinopharm");
 		super.setExclusivaMayores60(false);
 		setTemperaturaAlmacenaje(3);
 	}

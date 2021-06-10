@@ -5,7 +5,7 @@ package centroVacunacion;
  * 
  * */
 public abstract class VacunaCovid19 {
-    private String name;
+    private String nombre;
     protected int temperaturaAlmacenaje;
     private boolean exclusivaMayores60;
     private Fecha fechaIngreso;
@@ -15,12 +15,12 @@ public abstract class VacunaCovid19 {
 		this.setFechaIngreso(fechaIngreso);
 	}
 
-	public String getName() {
-        return name;
+	public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public int getTemperaturaAlmacenaje() {
@@ -55,7 +55,7 @@ public abstract class VacunaCovid19 {
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("Vacuna Nombre : ").append(name)
+    	sb.append("Vacuna Nombre : ").append(nombre)
     	.append(", Temperatura de almacenaje : ").append(temperaturaAlmacenaje)
     	.append(", Fecha de ingreso : ").append(fechaIngreso);
     	
@@ -68,7 +68,7 @@ public abstract class VacunaCovid19 {
 		int result = 1;
 		result = prime * result + (exclusivaMayores60 ? 1231 : 1237);
 		result = prime * result + ((fechaIngreso == null) ? 0 : fechaIngreso.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + temperaturaAlmacenaje;
 		return result;
 	}
@@ -89,10 +89,10 @@ public abstract class VacunaCovid19 {
 				return false;
 		} else if (!fechaIngreso.equals(other.fechaIngreso))
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (nombre == null) {
+			if (other.nombre != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!nombre.equals(other.nombre))
 			return false;
 		if (temperaturaAlmacenaje != other.temperaturaAlmacenaje)
 			return false;

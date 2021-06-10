@@ -126,7 +126,7 @@ public class Persona {
 				.append(", Edad :").append(edad)
 				.append(", Trabajador de la salud : ").append(trabajadorSalud)
 				.append(", Enfermedad Preexistente : ").append(enfermedadPreexistente)
-				.append(", Vacuna : ").append(vacuna != null ? vacuna.getName() : "" )
+				.append(", Vacuna : ").append(vacuna != null ? vacuna.getNombre() : "" )
 				.append(", Turno : ").append(turno != null ? turno.getFecha() : "").append(" ]").toString();
 	}
     

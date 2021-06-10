@@ -14,7 +14,7 @@ public class Moderna extends VacunaCovid19 {
     
 	public Moderna(Fecha fechaIngreso) {
 		super(fechaIngreso);
-		super.setName("Moderna");
+		super.setNombre("Moderna");
 		super.setExclusivaMayores60(false);
 		setFechaVencimiento(fechaIngreso);
 		setTemperaturaAlmacenaje(-18);
@@ -54,7 +54,7 @@ public class Moderna extends VacunaCovid19 {
 		result = prime * result + (isExclusivaMayores60() ? 1231 : 1237);
 		result = prime * result + ((super.getFechaIngreso() == null) ? 0 : super.getFechaIngreso().hashCode());
 		result = prime * result + ((getFechaVencimiento() == null) ? 0 : fechaVencimiento.hashCode());
-		result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+		result = prime * result + ((getNombre() == null) ? 0 : getNombre().hashCode());
 		result = prime * result + getTemperaturaAlmacenaje();
 		return result;
 	}
@@ -80,10 +80,10 @@ public class Moderna extends VacunaCovid19 {
 				return false;
 		} else if (!getFechaVencimiento().equals(other.getFechaVencimiento()))
 			return false;
-		if (getName() == null) {
-			if (other.getName() != null)
+		if (getNombre() == null) {
+			if (other.getNombre() != null)
 				return false;
-		} else if (!getName().equals(other.getName()))
+		} else if (!getNombre().equals(other.getNombre()))
 			return false;
 		if (getTemperaturaAlmacenaje() != other.getTemperaturaAlmacenaje())
 			return false;

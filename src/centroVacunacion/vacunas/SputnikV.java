@@ -11,7 +11,7 @@ public class SputnikV extends VacunaCovid19 {
 
 	public SputnikV(Fecha fechaIngreso) {
 		super(fechaIngreso);
-		super.setName("Sputnik");
+		super.setNombre("Sputnik");
 		super.setExclusivaMayores60(true);
 		setTemperaturaAlmacenaje(3);
 	}
