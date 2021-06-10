@@ -11,7 +11,6 @@ public class TestCentroVacunacion {
 	@Before
 	public void setUp() throws Exception {
 		Fecha.setFechaHoy();
-		
 		centro = new CentroVacunacion("UNGS", 5);
 		centro.ingresarVacunas("Sputnik", 10,new Fecha(20,3,2021));
 		centro.ingresarVacunas("AstraZeneca", 10,new Fecha(20,3,2021));
