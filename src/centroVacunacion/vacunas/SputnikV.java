@@ -3,8 +3,9 @@ package centroVacunacion.vacunas;
 import centroVacunacion.VacunaCovid19;
 
 /*
- * temperaturaAlmacenaje == 3
- * exclusivaMayores60 == true
+IREP:
+	temperaturaAlmacenaje: temperaturaAlmacenaje == 3
+	exclusivaMayores60 : exclusivaMayores60 == true
  * */
 public class SputnikV extends VacunaCovid19 {
 

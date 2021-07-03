@@ -4,8 +4,9 @@ import centroVacunacion.VacunaCovid19;
 
 
 /*
- * temperaturaAlmacenaje == 3
- *  exclusivaMayores60 == false
+IREP:
+	temperaturaAlmacenaje: temperaturaAlmacenaje == 3
+	exclusivaMayores60 : exclusivaMayores60 == false
  * */
 public class Astrazeneca extends VacunaCovid19 {
 

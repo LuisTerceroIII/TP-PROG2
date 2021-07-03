@@ -4,9 +4,12 @@ import centroVacunacion.Fecha;
 import centroVacunacion.VacunaCovid19;
 
 /*
- * temperaturaAlmacenaje == -18
- *  exclusivaMayores60 == false
- * fechaIngreso.compareTo(fechaVencimiento) < 0 SIEMPRE
+ * IREP:
+	temperaturaAlmacenaje: temperaturaAlmacenaje == -18
+	exclusivaMayores60 : exclusivaMayores60 == false
+	fechaIngreso: fechaIngreso.compareTo(fechaVencimiento) < 0 SIEMPRE
+	fechaVencimiento: fechaVencimiento.compareTo(fechaIngreso) > 0 SIEMPRE
+
  * */
 public class Moderna extends VacunaCovid19 {
 	

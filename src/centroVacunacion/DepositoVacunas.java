@@ -2,8 +2,13 @@ package centroVacunacion;
 
 import java.util.ArrayList;
 /*
- * vacunasEnStock.size() + vacunasReservadas.size() == frigorificoA.getEspaciosOcupados() + frigorificoB.getEspaciosOcupados() 
- * 
+IREP:
+	vacunasEnStock: vacunasEnStock != null
+	vacunasReservadas: vacunasReservadas != null
+	vacunasAplicadas: vacunasAplicadas != null
+	frigorificoA: frigorificoA != null && frigorificoA.getTemperaturaAlamacenamiento() == 3
+	frigorificoB: frigorificoB != null && frigorificoA.getTemperaturaAlamacenamiento() == -18
+
  * */
 public class DepositoVacunas {
 	
@@ -46,6 +51,23 @@ public class DepositoVacunas {
 				frigorificoB.liberarUnEspacio();
 			}
 		}
+		
+		public void agregarVacunaAStock(VacunaCovid19 vacuna) {
+			vacunasEnStock.add(vacuna);
+		}
+		public void agregarVacunaAReservadas(VacunaCovid19 vacuna) {
+			vacunasReservadas.add(vacuna);
+		}
+		public void eliminarVacunaReservada(VacunaCovid19 vacuna) {
+			vacunasReservadas.remove(vacuna);
+		}
+		public void agregarVacunaAAplicadas(VacunaCovid19 vacuna) {
+			vacunasAplicadas.add(vacuna);
+		}
+		
+		public int cantidadVacunasEnStock() {return vacunasEnStock.size();}
+		
+		
 
 		public ArrayList<VacunaCovid19> getVacunasEnStock() {
 			return vacunasEnStock;

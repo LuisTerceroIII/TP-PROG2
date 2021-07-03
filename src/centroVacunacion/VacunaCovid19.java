@@ -1,8 +1,12 @@
 package centroVacunacion;
 
 /*
- * -25 <= temperaturaAlmacenaje <= 5  -> En relacion a los frigorificos.
- * 
+IREP:
+	nombre: nombre.equals(“ASTRAZENECA”) || nombre.equals(“MODERNA”) ||
+	 		nombre.equals(“PFIZER”) || nombre.equals(“SINOPHARM”) || nombre.equals(“SPUTNIK”)
+	 		Puede ser minuscula o mayuscula.
+	temperaturaAlmacenaje:  -18 <= temperaturaAlmacenaje <= 3 
+	exclusivaMayores60 :  exclusivaMayores60 != null
  * */
 public abstract class VacunaCovid19 {
     private String nombre;
@@ -22,7 +26,7 @@ public abstract class VacunaCovid19 {
     }
 
     public void setTemperaturaAlmacenaje(int temperaturaAlmacenaje) {
-    	if(-25 <= temperaturaAlmacenaje && temperaturaAlmacenaje <= 5) {
+    	if(-18 <= temperaturaAlmacenaje && temperaturaAlmacenaje <= 3) {
     		this.temperaturaAlmacenaje = temperaturaAlmacenaje;
     	} else {
     		throw new RuntimeException("Temperatura de almacenaje no disponible");
@@ -37,6 +41,11 @@ public abstract class VacunaCovid19 {
     public void setExclusivaMayores60(boolean exclusivaMayores60) {
         this.exclusivaMayores60 = exclusivaMayores60;
     }
+    
+	public boolean estaVencida() {
+		return false;
+	}
+
 
     @Override
     public String toString() {

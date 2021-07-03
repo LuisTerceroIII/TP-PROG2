@@ -2,7 +2,9 @@ package centroVacunacion;
 
 /*
  * IREP:
- * persona.getVacuna().equals(vacuna) == true;
+    fecha : fecha.anterior(vacuna.getFechaVencimiento) == true
+    persona : persona.getVacuna().equals(vacuna) == true
+    vacuna : vacuna.equals(persona.getVacuna()) == true
  * */
 public class Turno {
 
@@ -32,6 +34,9 @@ public class Turno {
     }
     public Persona getPersona() {
         return persona;
+    }
+    public int dniPersona() {
+    	return persona.getDni();
     }
     public VacunaCovid19 getVacuna() {
         return vacuna;

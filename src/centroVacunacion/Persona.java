@@ -3,11 +3,13 @@ package centroVacunacion;
 
 /*
  * IREP : 
- * 	7 <= dni.toString().length() <= 9  -> reconoce numeros apartir de 1 millon, hasta 100 millones.
- * 18 <= edad <= 200
- * 1 <= prioridad <= 4
- * turno.getVacuna().equals(vacuna) == true
- * 
+ 	dni:  7 <= dni.toString().length() <= 9 -> reconoce números a partir de 1 millón, hasta 100 millones.
+	edad : 18 <= edad <= 200
+	trabajadorSalud : trabajadorSalud != null
+	enfermedadPreexistente : enfermedadPreexistente != null
+	prioridad : 1 <= prioridad <= 4
+	vacuna : vacuna.equals(turno.getVacuna()) == true
+	turno : turno.getVacuna().equals(vacuna) == true
  * */
 public class Persona {
     private int dni;
@@ -38,20 +40,8 @@ public class Persona {
     //  Enfemedades preexistentes = 3
     //  Resto de la poblacion = 4
     private int prioridad() {
-		if(this.isTrabajadorSalud() && this.isEnfermedadPreexistente() && this.getEdad() > 60) {
-			return 2;
-		} else if (this.isTrabajadorSalud() && this.getEdad() > 60) {
-			return 2;
-			
-		} else if (this.isTrabajadorSalud() && this.isEnfermedadPreexistente()) {
-			return 1;
-			
-		} else if(this.isTrabajadorSalud()) {
-			return 1;
-			
-		} else if(this.getEdad() > 60 && this.isEnfermedadPreexistente()) {
-			return 2;
-		
+		if(this.isTrabajadorSalud()) {
+			return 1;	
 		} else if(this.getEdad() > 60) {
 			return 2;
 		}
@@ -60,6 +50,14 @@ public class Persona {
 		} else {
 			return 4;
 		}
+    }
+    
+    public Fecha fechaTurno() {
+    	return turno.getFecha();
+    }
+    
+    public String nombreVacunaAsignada() {
+    	return vacuna.getNombre();
     }
     
     public int getDni() {

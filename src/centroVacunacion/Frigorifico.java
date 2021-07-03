@@ -1,9 +1,9 @@
 package centroVacunacion;
 /*
  * IREP:
- * -25 <= temperaturaAlamacenamiento <= 5
- * 10.000 <= capacidadMaximaAlmacenamiento <= 50.000
- * 0 <= espaciosOcupados <= capacidadMaximaAlmacenamiento
+	temperaturaAlamacenamiento: -25 <= temperaturaAlamacenamiento <= 5
+	capacidadMaximaAlmacenamiento: 10.000 <= capacidadMaximaAlmacenamiento <= 50.000
+	espaciosOcupados: 0 <= espaciosOcupados <= capacidadMaximaAlmacenamiento
  * */
 public class Frigorifico {
 	

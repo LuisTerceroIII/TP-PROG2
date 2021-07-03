@@ -50,10 +50,10 @@ public class TestCentroVacunacion {
 
 	@Test
 	public void testGenerarYConsultarTurnos() {
-		Fecha fechaInicial = new Fecha(2, 7, 2021);
-		Fecha fechaSiguiente = new Fecha(3, 7, 2021);
-		Fecha fechaAnteriorSinTurnos = new Fecha(1, 7, 2021);
-		Fecha fechaPosteriorSinTurnos = new Fecha(4, 7, 2021);
+		Fecha fechaInicial = new Fecha(2, 8, 2021);
+		Fecha fechaSiguiente = new Fecha(3, 8, 2021);
+		Fecha fechaAnteriorSinTurnos = new Fecha(1, 8, 2021);
+		Fecha fechaPosteriorSinTurnos = new Fecha(4, 8, 2021);
 
 		assertEquals(8, centro.listaDeEspera().size());
 		assertEquals(20, centro.vacunasDisponibles());
@@ -73,7 +73,7 @@ public class TestCentroVacunacion {
 	@Test
 	public void testGenerarTurnosYRegistrarVacunacion() {
 		int dniAVacunar=29959000;
-		Fecha fecha = new Fecha(30,6,2021);
+		Fecha fecha = new Fecha(30,7,2021);
 		assertEquals(20, centro.vacunasDisponibles());
 		assertTrue(centro.listaDeEspera().contains(dniAVacunar));
 		assertFalse(centro.reporteVacunacion().containsKey(dniAVacunar));
@@ -93,10 +93,11 @@ public class TestCentroVacunacion {
 		// Simulo que pasó la fecha del turno y reviso que los turnos no
 		// cumplidos  devuelvan las vacunas al STOCK y no quede gente en
 		// lista de espera.
-		Fecha.setFechaHoy(2, 7, 2021);
+		Fecha.setFechaHoy(2, 8, 2021);
 	
 
-		centro.generarTurnos(new Fecha(5,7,2021));
+		centro.generarTurnos(new Fecha(5,8,2021));
+	
 	
 		
 		assertEquals(19, centro.vacunasDisponibles());
