@@ -14,12 +14,12 @@ import centroVacunacion.vacunas.SputnikV;
 
 /*
  * IREP : 
-	nombreCentro: !nombreCentro.equals(��) && nombreCentro != null
+	nombreCentro: nombreCentro.length() > 1 && nombreCentro != null
 	personasSinTurno: personaSinTurno != null
 	personasConTurno: personasConTurno.size() == turnos.size()
 	personasVacunadas: personasVacunadas != null
 	deposito: deposito != null
-	vacunasVencidas: vacunasVencidas.get(�Moderna�) >= 0 && vacunasVencidas.get(�Pfizer�) >= 0
+	vacunasVencidas: vacunasVencidas.get("Moderna") >= 0 && vacunasVencidas.get("Pfizer") >= 0
 	turnos: turnos.size() == personasConTurno.size()
 	capacidadVacunacionDiaria: 0 < capacidadDiaria < 1000
 	turnosPorDia: 0 <= turnosPorDia <= capacidadVacunacionDiaria
@@ -36,7 +36,7 @@ public class CentroVacunacion {
 	    private HashMap<String,Integer> vacunasVencidas; // Fuera del frigorifico, no representan espacio fisco, solo se lleva la cuenta.
 	    private HashSet<Turno> turnos;
 	    private int capacidadVacunacionDiaria;
-	    private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
+		private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
 	    private int turnosAsignados; // Contador historico de cuantos turnos se han dado.
 
 	    /*Constructor. Recibe el nombre del centro y la capacidad de vacunacion diaria.
@@ -49,8 +49,8 @@ public class CentroVacunacion {
 	    		throw new RuntimeException("Capacidad de vacunacion no puede ser menor a 0.");
 	    	} else {
 	    		this.nombreCentro = nombreCentro;
-		    	this.capacidadVacunacionDiaria = capacidadVacunacionDiaria;
-		    	this.turnosPorDia = capacidadVacunacionDiaria;
+		    	setCapacidadVacunacionDiaria(capacidadVacunacionDiaria);
+		    	setTurnosPorDia(capacidadVacunacionDiaria);
 		    	this.personasSinTurno = new HashMap<>();
 		    	this.personasConTurno = new HashMap<>();
 		    	this.personasVacunadas = new HashMap<>();
@@ -236,8 +236,6 @@ public class CentroVacunacion {
 	    	return fechaInicial;
 	    }
 
-		
-
 	    /*Este metodo nace de extraer logica duplicada en asignarTurno().
 		  Hace toda la logica que conlleva asignar el turno: genera una fecha, crea un turno, asigna el turno a la persona,
 		  elimina la vacuna de las vacunas disponibles, agrega la vacuna a las vacunas reservadas, cambia a la persona de la lista
@@ -253,9 +251,11 @@ public class CentroVacunacion {
 			eliminarPersonaSinTurno(persona);
 			agregarPersonaConTurno(persona);
 			agregarTurno(turno);
-			this.turnosAsignados++;
+			incrementarTurnosAsignados();
 			return fechaInicial;
 	}
+
+
 
 
 	/* Devuelve una lista con los dni de las personas que tienen turno asignado para la fecha pasada por parametro.
@@ -290,9 +290,6 @@ public class CentroVacunacion {
 
 	    	} else { throw new RuntimeException("Persona no tiene turno");}   	
 	    }
-
-
-
 
 	/* Devuelve un Diccionario donde
 	    * - la clave es el dni de las personas vacunadas
@@ -394,11 +391,11 @@ public class CentroVacunacion {
 		/*Recibe fecha para generar turno, si no hay turnos disponibles se asgina fecha para "manana"*/
 		private Fecha generarFechaTurno(Fecha fechaInicial) {
 			Fecha fecha = new Fecha(fechaInicial);
-			if(turnosPorDia < 1) {
+			if(getTurnosPorDia() < 1) {
 				fecha.avanzarUnDia();
-				turnosPorDia = capacidadVacunacionDiaria;
+				setTurnosPorDia(getCapacidadVacunacionDiaria());
 			}
-			turnosPorDia--;
+			setTurnosPorDia(getTurnosPorDia() - 1);
 			return fecha;
 		}
 		
@@ -421,6 +418,30 @@ public class CentroVacunacion {
 		}
 		private boolean personaMayor60(Persona persona) {
 			return persona.getPrioridad() == 2 || persona.getEdad() > 60;
+		}
+
+		private int getCapacidadVacunacionDiaria() {
+			return capacidadVacunacionDiaria;
+		}
+
+		private void setCapacidadVacunacionDiaria(int capacidadVacunacionDiaria) {
+			if(capacidadVacunacionDiaria > 0 && capacidadVacunacionDiaria < 1000) {
+				this.capacidadVacunacionDiaria = capacidadVacunacionDiaria;
+			} else throw new RuntimeException("Capacidad de vacunatorio aceptada es entre 1 y 999");
+
+		}
+
+		private int getTurnosPorDia() {
+			return turnosPorDia;
+		}
+
+		private void setTurnosPorDia(int turnosPorDia) {
+			if(turnosPorDia >= 0 && turnosPorDia <= getCapacidadVacunacionDiaria()) {
+				this.turnosPorDia = turnosPorDia;
+			}
+		}
+		private void incrementarTurnosAsignados() {
+			this.turnosAsignados++;
 		}
 
 

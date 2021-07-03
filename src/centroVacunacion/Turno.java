@@ -2,7 +2,7 @@ package centroVacunacion;
 
 /*
  * IREP:
-    fecha : fecha.anterior(vacuna.getFechaVencimiento) == true
+    fecha : fecha.posterior(Fecha.hoy()) == true
     persona : persona.getVacuna().equals(vacuna) == true
     vacuna : vacuna.equals(persona.getVacuna()) == true
  * */
@@ -27,7 +27,9 @@ public class Turno {
         persona.setVacuna(vacuna);
     }
     public void asignarFecha(Fecha fecha) {
-        this.fecha = fecha;
+        if(fecha.posterior(Fecha.hoy())) {
+            this.fecha = fecha;
+        } else throw new RuntimeException("Fecha invalida, seleccione una fecha del futuro");
     }
     public Fecha getFecha() {
         return fecha;

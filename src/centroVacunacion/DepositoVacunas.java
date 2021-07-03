@@ -65,10 +65,10 @@ public class DepositoVacunas {
 			vacunasAplicadas.add(vacuna);
 		}
 		
-		public int cantidadVacunasEnStock() {return vacunasEnStock.size();}
+		public int cantidadVacunasEnStock() {
+			return vacunasEnStock.size();
+		}
 		
-		
-
 		public ArrayList<VacunaCovid19> getVacunasEnStock() {
 			return vacunasEnStock;
 		}

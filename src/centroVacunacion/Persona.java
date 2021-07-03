@@ -51,7 +51,8 @@ public class Persona {
 			return 4;
 		}
     }
-    
+
+    // retorna fecha del turno asociado
     public Fecha fechaTurno() {
     	return turno.getFecha();
     }

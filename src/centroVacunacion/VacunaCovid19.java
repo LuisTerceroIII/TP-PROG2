@@ -18,7 +18,11 @@ public abstract class VacunaCovid19 {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+    	if(nombre.equals("AstraZeneca") || nombre.equals("Moderna") || nombre.equals("Pfizer")
+    		|| nombre.equals("Sinopharm") || nombre.equals("Sputnik") ) {
+    		this.nombre = nombre;
+    	} else throw new RuntimeException("Vacuna no valida!");
+        
     }
 
     public int getTemperaturaAlmacenaje() {
@@ -52,7 +56,6 @@ public abstract class VacunaCovid19 {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Vacuna Nombre : ").append(nombre)
     	.append(", Temperatura de almacenaje : ").append(temperaturaAlmacenaje);
-    	
         return sb.toString();
     }
 
@@ -86,10 +89,5 @@ public abstract class VacunaCovid19 {
 			return false;
 		return true;
 	}
-    
-    
-
-
-
 
 }

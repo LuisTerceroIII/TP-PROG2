@@ -24,6 +24,11 @@ public class Moderna extends VacunaCovid19 {
 		setFechaVencimiento(fechaIngreso);
 		setTemperaturaAlmacenaje(-18);
 	}
+	//Verdadero si esta vencida !
+	public boolean estaVencida() {
+		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
+	}
+	
 	@Override
 	public void setTemperaturaAlmacenaje(int temperatura) {
 		if(temperatura != -18) throw new RuntimeException("Moderna debe almacenarse a -18 grados");
@@ -36,6 +41,7 @@ public class Moderna extends VacunaCovid19 {
 
 	public void setFechaIngreso(Fecha fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
+		setFechaVencimiento(fechaIngreso);
 	}
 	
 	private void setFechaVencimiento(Fecha fechaIngreso) {
@@ -47,11 +53,6 @@ public class Moderna extends VacunaCovid19 {
 		return fechaVencimiento;
 	}
 	
-	
-	//Verdadero si esta vencida !
-	public boolean estaVencida() {
-		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
-	}
 	
     @Override
     public String toString() {
