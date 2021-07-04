@@ -1,6 +1,10 @@
 package centroVacunacion;
 
+import centroVacunacion.vacunas.*;
+
 import java.util.ArrayList;
+import java.util.Iterator;
+
 /*
 IREP:
 	vacunasEnStock: vacunasEnStock != null
@@ -89,4 +93,38 @@ public class DepositoVacunas {
 			return frigorificoB;
 		}
 
+		public Iterator<VacunaCovid19> getIteratorVacunasEnStock() {
+			return getVacunasEnStock().iterator();
+		}
+		public Iterator<VacunaCovid19> getIteratorVacunasReservadas() {
+			return getVacunasReservadas().iterator();
+		}
+		public Iterator<VacunaCovid19> getIteratorVacunasAplicadas() {
+			return getVacunasAplicadas().iterator();
+		}
+
+		public void ingresarSputnikV(int cantidad) {
+			agregarVacunaAStock(new SputnikV());
+			almacenar("SPUTNIK");
+		}
+
+		public void ingresarSinopharm(int cantidad) {
+			agregarVacunaAStock(new Sinopharm());
+			almacenar("SINOPHARM");
+		}
+
+		public void ingresarPfizer(int cantidad, Fecha fechaIngreso) {
+			agregarVacunaAStock(new Pfizer(fechaIngreso));
+			almacenar("PFIZER");
+		}
+
+		public void ingresarModerna(int cantidad, Fecha fechaIngreso) {
+			agregarVacunaAStock(new Moderna(fechaIngreso));
+			almacenar("MODERNA");
+		}
+
+		public void ingresarAstrazeneca(int cantidad) {
+			agregarVacunaAStock(new Astrazeneca());
+			almacenar("ASTRAZENECA");
+		}
 }

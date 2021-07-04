@@ -6,10 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import centroVacunacion.vacunas.Astrazeneca;
-import centroVacunacion.vacunas.Moderna;
 import centroVacunacion.vacunas.Pfizer;
-import centroVacunacion.vacunas.Sinopharm;
 import centroVacunacion.vacunas.SputnikV;
 
 /*
@@ -29,12 +26,9 @@ import centroVacunacion.vacunas.SputnikV;
 public class CentroVacunacion {
 	
 	  	private String nombreCentro;
-	 	private HashMap<Integer,Persona> personasSinTurno;
-	 	private HashMap<Integer,Persona> personasConTurno;
-	    private HashMap<Integer,Persona> personasVacunadas;
 	    private DepositoVacunas deposito;//De aqui se sacan las vacunas.
-	    private HashMap<String,Integer> vacunasVencidas; // Fuera del frigorifico, no representan espacio fisco, solo se lleva la cuenta.
-	    private HashSet<Turno> turnos;
+		private ControlTurnos controlTurnos;
+	    private HashMap<String,Integer> vacunasVencidas; // Cantidad de vacunas vencidas en este vacunatorio.
 	    private int capacidadVacunacionDiaria;
 		private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
 	    private int turnosAsignados; // Contador historico de cuantos turnos se han dado.
@@ -51,12 +45,9 @@ public class CentroVacunacion {
 	    		this.nombreCentro = nombreCentro;
 		    	setCapacidadVacunacionDiaria(capacidadVacunacionDiaria);
 		    	setTurnosPorDia(capacidadVacunacionDiaria);
-		    	this.personasSinTurno = new HashMap<>();
-		    	this.personasConTurno = new HashMap<>();
-		    	this.personasVacunadas = new HashMap<>();
+		    	this.controlTurnos = new ControlTurnos();
 		    	this.deposito = new DepositoVacunas();
 		    	this.vacunasVencidas = new HashMap<>();
-		    	this.turnos = new HashSet<>();
 		    	this.turnosAsignados = 0;	
 		    	vacunasVencidas.put("Moderna", 0);
 		    	vacunasVencidas.put("Pfizer", 0);
@@ -71,52 +62,33 @@ public class CentroVacunacion {
 	    * La cantidad se suma al stock existente*/
 	    public void ingresarVacunas(String nombreVacuna, int cantidad, Fecha fechaIngreso) {
 	    	if(cantidad <= 0) throw new RuntimeException("Cantidad de vacunas debe ser mayor a 0");
-	    	switch (nombreVacuna.toUpperCase()) {
-			case "ASTRAZENECA":
-				for (int i = 0; i < cantidad ; i++) {
-					deposito.agregarVacunaAStock(new Astrazeneca());
-					deposito.almacenar("ASTRAZENECA");
+			for (int i = 0; i < cantidad ; i++) {
+				switch (nombreVacuna.toUpperCase()) {
+					case "ASTRAZENECA":
+						deposito.ingresarAstrazeneca(cantidad);
+						break;
+					case "MODERNA":
+						deposito.ingresarModerna(cantidad,fechaIngreso);
+						break;
+					case "PFIZER":
+						deposito.ingresarPfizer(cantidad,fechaIngreso);
+						break;
+					case "SINOPHARM":
+						deposito.ingresarSinopharm(cantidad);
+						break;
+					case "SPUTNIK":
+						deposito.ingresarSputnikV(cantidad);
+						break;
+					default:
+						throw new RuntimeException("Vacuna no se reconoce");
 				}
-				break;
-				
-			case "MODERNA":
-				for (int i = 0; i < cantidad ; i++) {
-					deposito.agregarVacunaAStock(new Moderna(fechaIngreso));
-					deposito.almacenar("MODERNA");
-				}
-				break;
-				
-			case "PFIZER":
-				for (int i = 0; i < cantidad ; i++) {
-					deposito.agregarVacunaAStock(new Pfizer(fechaIngreso));
-					deposito.almacenar("PFIZER");
-				}
-				break;
-				
-			case "SINOPHARM":
-				for (int i = 0; i < cantidad ; i++) {
-					deposito.agregarVacunaAStock(new Sinopharm());
-					deposito.almacenar("SINOPHARM");
-				}
-				break;
-				
-			case "SPUTNIK":
-				for (int i = 0; i < cantidad ; i++) {
-					deposito.agregarVacunaAStock(new SputnikV());
-					deposito.almacenar("SPUTNIK");
-				}
-				break;
-				
-			default:
-				throw new RuntimeException("Vacuna no se reconoce");
 			}
-	    	
 	    }
 
 	    //Total de vacunas disponibles no vencidas sin distincion por tipo.
 	    public int vacunasDisponibles() {
 	    	int total = deposito.cantidadVacunasEnStock();
-	    	Iterator<VacunaCovid19> it = deposito.getVacunasEnStock().iterator();
+	    	Iterator<VacunaCovid19> it = deposito.getIteratorVacunasEnStock();
 	    	while(it.hasNext()) {
 	    		VacunaCovid19 vacuna = it.next();
 	    		if(vacuna.estaVencida()) {
@@ -126,11 +98,12 @@ public class CentroVacunacion {
 	    	return total;
 	    }
 
-	    /*Total de vacunas disponibles no vencidas que coincida con el nombre de
-	      vacuna especificado. */
+
+	/*Total de vacunas disponibles no vencidas que coincida con el nombre de
+      vacuna especificado. */
 	    public int vacunasDisponibles(String nombreVacuna) {
 	    	int disponibles = 0;
-	    	Iterator<VacunaCovid19> it = deposito.getVacunasEnStock().iterator();
+	    	Iterator<VacunaCovid19> it = deposito.getIteratorVacunasEnStock();
 	    	while(it.hasNext()) {
 	    		VacunaCovid19 vacuna = it.next();
 	    		if(vacuna.getNombre().toUpperCase().equals(nombreVacuna.toUpperCase()) ) {
@@ -150,12 +123,12 @@ public class CentroVacunacion {
 	    	int edad = Fecha.diferenciaAnios(Fecha.hoy(), nacimiento);
 	    	if(edad < 18) {
 	    		throw new RuntimeException("Debe ser mayor de edad para inscribirse.");
-	    	} else if(personaEstaInscripta(dni)) {
+	    	} else if(controlTurnos.personaEstaInscripta(dni)) {
 	    		throw new RuntimeException("Persona ya inscripta.");
-	    	} else if(personaEstaVacunada(dni)) {
+	    	} else if(controlTurnos.personaEstaVacunada(dni)) {
 	    		throw new RuntimeException("Persona ya fue vacunada.");
 	    	} else {
-				agregarPersonaSinTurno(dni, tienePadecimientos, esEmpleadoSalud, edad);
+				controlTurnos.agregarPersonaSinTurno(dni, tienePadecimientos, esEmpleadoSalud, edad);
 			}
 	    }
 
@@ -163,7 +136,7 @@ public class CentroVacunacion {
 	    * Si no quedan inscriptos sin vacunas debe devolver una lista vacia*/
 	    public java.util.List<Integer> listaDeEspera() {
 	    	ArrayList<Integer> listaEspera = new ArrayList<>();
-	    	listaEspera.addAll(this.personasSinTurno.keySet());
+	    	listaEspera.addAll(controlTurnos.getDNIsPersonasSinTurno());
 	    	return listaEspera;
 	    }
 
@@ -191,8 +164,8 @@ public class CentroVacunacion {
 	    	HashSet<Persona> conEnfermedadPreexistente = new HashSet<>();
 	    	HashSet<Persona> resto = new HashSet<>();
 
-			for (Integer dni : personasSinTurno.keySet()) {
-				Persona persona = personasSinTurno.get(dni);
+			for (Integer dni : controlTurnos.getDNIsPersonasSinTurno()) {
+				Persona persona = controlTurnos.getPersonaSinTurnoPorDNI(dni);
 				switch (persona.getPrioridad()) {
 					case 1:
 						trabajadoresSalud.add(persona);
@@ -219,18 +192,17 @@ public class CentroVacunacion {
     	  	Iterator<Persona> itGrupo = grupo.iterator();
 	    	while(itGrupo.hasNext()) {
 	    		Persona persona = itGrupo.next();
-	    		Iterator<VacunaCovid19> itVacunas = deposito.getVacunasEnStock().iterator();
+	    		Iterator<VacunaCovid19> itVacunas = deposito.getIteratorVacunasEnStock();
 	    		while(itVacunas.hasNext()) {
 	    			VacunaCovid19 vacuna = itVacunas.next();
-	    			if(personaMayor60(persona)) {
-	    				if((vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-							fechaInicial = asignarTurnoAux(fechaInicial, persona, itVacunas, vacuna);
-						}
-	    			} else {
-		    			if( !(vacuna instanceof Pfizer || vacuna instanceof SputnikV) && persona.getTurno() == null) {
-							fechaInicial = asignarTurnoAux(fechaInicial, persona, itVacunas, vacuna);
-						}
-	    			}
+	    			boolean esFitzerOSputnikV = (vacuna instanceof Pfizer || vacuna instanceof SputnikV);
+	    			boolean noTieneTurno = persona.getTurno() == null;
+	    			
+					if (personaMayor60(persona) && esFitzerOSputnikV && noTieneTurno){
+						fechaInicial = asignarTurnoAux(fechaInicial, persona, itVacunas, vacuna);
+					} else if(!personaMayor60(persona) && !esFitzerOSputnikV && noTieneTurno){
+						fechaInicial = asignarTurnoAux(fechaInicial, persona, itVacunas, vacuna);
+					}
 	    		}
 	    	}
 	    	return fechaInicial;
@@ -248,22 +220,19 @@ public class CentroVacunacion {
 			persona.setTurno(turno);
 			itVacunas.remove();
 			deposito.agregarVacunaAReservadas(vacuna);
-			eliminarPersonaSinTurno(persona);
-			agregarPersonaConTurno(persona);
-			agregarTurno(turno);
+			controlTurnos.eliminarPersonaSinTurno(persona);
+			controlTurnos.agregarPersonaConTurno(persona);
+			controlTurnos.agregarTurno(turno);
 			incrementarTurnosAsignados();
 			return fechaInicial;
 	}
-
-
-
 
 	/* Devuelve una lista con los dni de las personas que tienen turno asignado para la fecha pasada por parametro.
 	    * Si no hay turnos asignados para ese dia, se  devuelve una lista vacia.
 	    * La cantidad de turnos no puede exceder la capacidad por dia de la ungs.*/
 	    public java.util.List<Integer> turnosConFecha(Fecha fecha) {
 	    	ArrayList<Integer> dnis = new ArrayList<>();
-	    	for(Turno turno : turnos) {
+	    	for(Turno turno : controlTurnos.getTurnos()) {
 	    		if(turno.getFecha().equals(fecha)) {
 	    			dnis.add(turno.dniPersona());
 	    		}
@@ -277,15 +246,15 @@ public class CentroVacunacion {
 	    * - Si no esta inscripto o no tiene turno ese dia, se genera una Excepcion.
 	    */
 		public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
-	    	if(personaTieneTurno(dni)) {
-	    		Persona persona = getPersonaConTurno(dni);
+	    	if(controlTurnos.personaTieneTurno(dni)) {
+	    		Persona persona = controlTurnos.getPersonaConTurno(dni);
 	    		if(persona.fechaTurno().equals(fechaVacunacion)) {
-	    			eliminarPersonaConTurno(dni);
-					agregarPersonaVacunada(persona);
+					controlTurnos.eliminarPersonaConTurno(dni);
+					controlTurnos.agregarPersonaVacunada(persona);
 					deposito.eliminarVacunaReservada(persona.getVacuna());
 	    			deposito.agregarVacunaAAplicadas(persona.getVacuna());
 					deposito.liberarUnEspacioFrigorifico(persona.getVacuna());
-					eliminarTurno(persona);
+					controlTurnos.eliminarTurno(persona);
 				} else {throw new RuntimeException("Persona no tiene turno hoy");}
 
 	    	} else { throw new RuntimeException("Persona no tiene turno");}   	
@@ -296,8 +265,8 @@ public class CentroVacunacion {
 	    * - Y, el valor es el nombre de la vacuna aplicada. */
 	    public Map<Integer, String> reporteVacunacion() {
 	    	HashMap<Integer,String> vacunados = new HashMap<>();
-			for (Integer dni : personasVacunadas.keySet()) {
-				Persona persona = getPersonaVacunada(dni);
+			for (Integer dni : controlTurnos.getDNIsPersonasVacunadas()) {
+				Persona persona = controlTurnos.getPersonaVacunada(dni);
 				vacunados.put(persona.getDni(), persona.nombreVacunaAsignada());
 			}
 	    	return vacunados;
@@ -318,40 +287,14 @@ public class CentroVacunacion {
 			sb.append("Cantidad de vacunas disponibles : ").append(vacunasDisponibles()).append(". \n");
 			sb.append("Cantidad de personas en lista de espera : ").append(listaDeEspera().size()).append(". \n");
 			sb.append("Cantidad de turnos asignados  : ").append(turnosAsignados).append(". \n");
-			sb.append("Cantidad de vacunas aplicadas : ").append(personasVacunadas.size()).append(". \n");
+			sb.append("Cantidad de vacunas aplicadas : ").append(controlTurnos.cantidadPersonasVacunadas()).append(". \n");
 			return sb.toString();
 		}
 
-
 		//Funciones AUX :
-		private boolean personaEstaVacunada(int dni) {
-			return personasVacunadas.containsKey(dni);
-		}
 
-		private boolean personaEstaInscripta(int dni) {
-			return personasSinTurno.containsKey(dni);
-		}
-
-		private void agregarPersonaSinTurno(int dni, boolean tienePadecimientos, boolean esEmpleadoSalud, int edad) {
-			personasSinTurno.put(dni, new Persona(dni, edad, esEmpleadoSalud, tienePadecimientos));
-		}
-		private void eliminarPersonaSinTurno(Persona persona) {
-			personasSinTurno.remove(persona.getDni());
-		}
-		private void agregarPersonaConTurno(Persona persona) {
-			personasConTurno.put(persona.getDni(), persona);
-		}
-		
-		private void eliminarPersonaConTurno(int dni) {
-			personasConTurno.remove(dni);
-		}
-
-		private void agregarPersonaVacunada(Persona persona) {
-			personasVacunadas.put(persona.getDni(), persona);
-		}
-		
 		private void verificarVencimientoVacunas() {
-			Iterator<VacunaCovid19> itVacunas = deposito.getVacunasEnStock().iterator();
+			Iterator<VacunaCovid19> itVacunas = deposito.getIteratorVacunasEnStock();
 			while(itVacunas.hasNext()) {
 				VacunaCovid19 vacuna = itVacunas.next();
 				if(vacuna.estaVencida()) {
@@ -369,7 +312,7 @@ public class CentroVacunacion {
 		}
 
 		private void verificarTurnosVencidos() {
-			Iterator<Turno> itTurnos = turnos.iterator();
+			Iterator<Turno> itTurnos = controlTurnos.getIteratorTurnos();
 			while(itTurnos.hasNext()) {
 				Turno turno = itTurnos.next();
 				if(turno.estaVencido()) {
@@ -382,7 +325,7 @@ public class CentroVacunacion {
 		private void eliminarTurnoVencido(Iterator<Turno> itTurnos, Turno turno) {
 			int dni = turno.dniPersona();
 			VacunaCovid19 vacuna = turno.getVacuna();
-			eliminarPersonaConTurno(dni);
+			controlTurnos.eliminarPersonaConTurno(dni);
 			deposito.eliminarVacunaReservada(vacuna);
 			deposito.agregarVacunaAStock(vacuna);
 			itTurnos.remove();
@@ -398,24 +341,7 @@ public class CentroVacunacion {
 			setTurnosPorDia(getTurnosPorDia() - 1);
 			return fecha;
 		}
-		
-		private void agregarTurno(Turno turno) {
-			turnos.add(turno);
-		}
-		private void eliminarTurno(Persona persona) {
-			turnos.remove(persona.getTurno());
-		}
-		
-		private Persona getPersonaConTurno(int dni) {
-			return personasConTurno.get(dni);
-		}
-		private boolean personaTieneTurno(int dni) {
-			return personasConTurno.containsKey(dni);
-		}
 
-		private Persona getPersonaVacunada(Integer dni) {
-			return personasVacunadas.get(dni);
-		}
 		private boolean personaMayor60(Persona persona) {
 			return persona.getPrioridad() == 2 || persona.getEdad() > 60;
 		}
@@ -440,10 +366,8 @@ public class CentroVacunacion {
 				this.turnosPorDia = turnosPorDia;
 			}
 		}
+
 		private void incrementarTurnosAsignados() {
 			this.turnosAsignados++;
 		}
-
-
-
 }
