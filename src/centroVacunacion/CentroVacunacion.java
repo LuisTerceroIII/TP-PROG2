@@ -17,7 +17,6 @@ import centroVacunacion.vacunas.SputnikV;
 	capacidadVacunacionDiaria: 0 < capacidadDiaria < 1000
 	turnosPorDia: 0 <= turnosPorDia <= capacidadVacunacionDiaria
 	turnosAsignados: 0 <= turnosAsignados <= personasVacunadas.size()
-
  * */
 public class CentroVacunacion {
 	
@@ -118,7 +117,7 @@ public class CentroVacunacion {
 	    	} else if(controlTurnos.personaEstaVacunada(dni)) {
 	    		throw new RuntimeException("Persona ya fue vacunada.");
 	    	} else {
-				controlTurnos.agregarPersonaSinTurno(dni, tienePadecimientos, esEmpleadoSalud, edad);
+				controlTurnos.agregarPersonaSinTurno(new Persona(dni,edad,esEmpleadoSalud,tienePadecimientos));
 			}
 	    }
 
@@ -144,7 +143,7 @@ public class CentroVacunacion {
 	    public void generarTurnos(Fecha fechaInicial) {
 	    	if(fechaInicial.anterior(Fecha.hoy())) throw new RuntimeException("La fecha es anterior a la de hoy !");
 	    	/* Verificar turnos vencidos*/
-	    	controlTurnos.verificarTurnosVencidos(deposito);
+	    	controlTurnos.eliminarTurnosVencidos(deposito);
 	    	/*Verificar vacunas vencidas*/
 	    	deposito.verificarVencimientoVacunas();
 	    	/*Generacion de turnos !*/
@@ -210,7 +209,7 @@ public class CentroVacunacion {
 			persona.setTurno(turno);
 			itVacunas.remove();
 			deposito.agregarVacunaAReservadas(vacuna);
-			controlTurnos.eliminarPersonaSinTurno(persona);
+			controlTurnos.eliminarPersonaSinTurno(persona.getDni());
 			controlTurnos.agregarPersonaConTurno(persona);
 			controlTurnos.agregarTurno(turno);
 			incrementarTurnosAsignados();
@@ -244,7 +243,7 @@ public class CentroVacunacion {
 					deposito.eliminarVacunaReservada(persona.getVacuna());
 	    			deposito.agregarVacunaAAplicadas(persona.getVacuna());
 					deposito.liberarUnEspacioFrigorifico(persona.getVacuna());
-					controlTurnos.eliminarTurno(persona);
+					controlTurnos.eliminarTurno(persona.getTurno());
 				} else {throw new RuntimeException("Persona no tiene turno hoy");}
 
 	    	} else { throw new RuntimeException("Persona no tiene turno");}   	
@@ -298,7 +297,7 @@ public class CentroVacunacion {
 			return persona.getPrioridad() == 2 || persona.getEdad() > 60;
 		}
 
-		private int getCapacidadVacunacionDiaria() {
+		public int getCapacidadVacunacionDiaria() {
 			return capacidadVacunacionDiaria;
 		}
 
@@ -309,7 +308,7 @@ public class CentroVacunacion {
 
 		}
 
-		private int getTurnosPorDia() {
+		public int getTurnosPorDia() {
 			return turnosPorDia;
 		}
 

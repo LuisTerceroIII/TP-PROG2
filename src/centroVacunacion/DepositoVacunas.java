@@ -18,7 +18,6 @@ IREP:
 
  * */
 public class DepositoVacunas {
-	
 	 	private ArrayList<VacunaCovid19> vacunasEnStock;
 	    private ArrayList<VacunaCovid19> vacunasReservadas;
 	    private ArrayList<VacunaCovid19> vacunasAplicadas;
@@ -57,7 +56,7 @@ public class DepositoVacunas {
 		almacenar("ASTRAZENECA");
 	}
 	
-	    private  void almacenar(String vacuna) {
+	    private void almacenar(String vacuna) {
 	    	String nombreVacuna = vacuna.toUpperCase();
 	    	switch (nombreVacuna) {
 			case "ASTRAZENECA":
@@ -73,9 +72,8 @@ public class DepositoVacunas {
 				throw new RuntimeException("Vacuna no se reconoce");
 			}    
 	    }
-
 		//Libera un espacio en el frigorifico correspondiente
-		public  void liberarUnEspacioFrigorifico(VacunaCovid19 vacuna) {
+		public void liberarUnEspacioFrigorifico(VacunaCovid19 vacuna) {
 			if(vacuna.getTemperaturaAlmacenaje() == frigorificoA.getTemperaturaAlamacenamiento()) {
 				frigorificoA.liberarUnEspacio();
 			} else if(vacuna.getTemperaturaAlmacenaje() == frigorificoB.getTemperaturaAlamacenamiento()) {

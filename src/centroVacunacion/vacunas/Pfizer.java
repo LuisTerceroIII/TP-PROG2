@@ -40,6 +40,8 @@ public class Pfizer extends VacunaCovid19 {
 		this.fechaIngreso = fechaIngreso;
 		setFechaVencimiento(fechaIngreso);
 	}
+
+	@Override
 	public boolean estaVencida() {
 		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
 	}

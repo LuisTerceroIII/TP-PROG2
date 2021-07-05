@@ -13,24 +13,23 @@ import java.util.Iterator;
 *
 * */
 public class ControlTurnos {
-	
 	private HashMap<Integer,Persona> personasSinTurno;
  	private HashMap<Integer,Persona> personasConTurno;
     private HashMap<Integer,Persona> personasVacunadas;
 	private HashSet<Turno> turnos;
 
-	ControlTurnos() {
+	public ControlTurnos() {
 			this.personasSinTurno = new HashMap<>();
 	    	this.personasConTurno = new HashMap<>();
 	    	this.personasVacunadas = new HashMap<>();
 			this.turnos = new HashSet<>();
 	}
 
-    public void agregarPersonaSinTurno(int dni, boolean tienePadecimientos, boolean esEmpleadoSalud, int edad) {
-        personasSinTurno.put(dni, new Persona(dni, edad, esEmpleadoSalud, tienePadecimientos));
+    public void agregarPersonaSinTurno(Persona persona) {
+        personasSinTurno.put(persona.getDni(), persona);
     }
-    public void eliminarPersonaSinTurno(Persona persona) {
-        personasSinTurno.remove(persona.getDni());
+    public void eliminarPersonaSinTurno(int dni) {
+        personasSinTurno.remove(dni);
     }
     public Persona getPersonaSinTurnoPorDNI(Integer dni) {
         return personasSinTurno.get(dni);
@@ -57,8 +56,8 @@ public class ControlTurnos {
     public void agregarPersonaVacunada(Persona persona) {
         personasVacunadas.put(persona.getDni(), persona);
     }
-    public void eliminarPersonaVacunada(Persona persona) {
-        personasVacunadas.remove(persona.getDni());
+    public void eliminarPersonaVacunada(int dni) {
+        personasVacunadas.remove(dni);
     }
     public Persona getPersonaVacunadaPorDNI(Integer dni) {
         return personasVacunadas.get(dni);
@@ -67,7 +66,7 @@ public class ControlTurnos {
     public int cantidadPersonasVacunadas() { return personasVacunadas.size(); }
 
     public void agregarTurno(Turno turno) { turnos.add(turno); }
-    public void eliminarTurno(Persona persona) { turnos.remove(persona.getTurno()); }
+    public void eliminarTurno(Turno turno) { turnos.remove(turno); }
     public HashSet<Turno> getTurnos() {
         return turnos;
     }
@@ -87,28 +86,18 @@ public class ControlTurnos {
     * Es importante notar que este metodo debe recibir un objeto deposito ya que la consiga es que, un turno vencido significa una vacuna liberada,
     * es por eso que se utiliza al objeto deposito para poder almacenar la vacuna del turno perdido.
     * */
-    public void verificarTurnosVencidos(DepositoVacunas deposito) {
+    public void eliminarTurnosVencidos(DepositoVacunas deposito) {
         Iterator<Turno> itTurnos = getIteratorTurnos();
         while(itTurnos.hasNext()) {
             Turno turno = itTurnos.next();
             if(turno.estaVencido()) {
-                eliminarTurnoVencido(itTurnos, turno, deposito);
+                int dni = turno.dniPersona();
+                VacunaCovid19 vacuna = turno.getVacuna();
+                eliminarPersonaConTurno(dni);
+                deposito.eliminarVacunaReservada(vacuna);
+                deposito.agregarVacunaAStock(vacuna);
+                itTurnos.remove();
             }
         }
     }
-    //Se encarga de eliminar el turno de "turnos", la persona de "personasConTurno", y mueve Vacuna de "vacunaReservada" a "vacunaEnStock"
-    private void eliminarTurnoVencido(Iterator<Turno> itTurnos, Turno turno, DepositoVacunas deposito) {
-        int dni = turno.dniPersona();
-        VacunaCovid19 vacuna = turno.getVacuna();
-        eliminarPersonaConTurno(dni);
-        deposito.eliminarVacunaReservada(vacuna);
-        deposito.agregarVacunaAStock(vacuna);
-        itTurnos.remove();
-    }
-
-
-
-
-
-
 }

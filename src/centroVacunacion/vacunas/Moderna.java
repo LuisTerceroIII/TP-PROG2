@@ -23,6 +23,7 @@ public class Moderna extends VacunaCovid19 {
 		setTemperaturaAlmacenaje(-18);
 	}
 	//Verdadero si esta vencida !
+	@Override
 	public boolean estaVencida() {
 		return Fecha.hoy().compareTo(getFechaVencimiento()) > 0;
 	}
