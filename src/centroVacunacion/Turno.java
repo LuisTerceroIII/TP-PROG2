@@ -47,6 +47,7 @@ public class Turno {
 	public boolean estaVencido() {
 		return Fecha.hoy().compareTo(fecha) > 0;
 	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

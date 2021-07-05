@@ -10,7 +10,6 @@ IREP:
  * */
 public class Astrazeneca extends VacunaCovid19 {
 
-        
 	public Astrazeneca() {
 		super.setNombre("AstraZeneca");
 		super.setExclusivaMayores60(false);

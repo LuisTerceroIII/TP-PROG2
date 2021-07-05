@@ -2,8 +2,8 @@ package centroVacunacion;
 
 /*
 IREP:
-	nombre: nombre.equals(“ASTRAZENECA”) || nombre.equals(“MODERNA”) ||
-	 		nombre.equals(“PFIZER”) || nombre.equals(“SINOPHARM”) || nombre.equals(“SPUTNIK”)
+	nombre: nombre.equals(ï¿½ASTRAZENECAï¿½) || nombre.equals(ï¿½MODERNAï¿½) ||
+	 		nombre.equals(ï¿½PFIZERï¿½) || nombre.equals(ï¿½SINOPHARMï¿½) || nombre.equals(ï¿½SPUTNIKï¿½)
 	 		Puede ser minuscula o mayuscula.
 	temperaturaAlmacenaje:  -18 <= temperaturaAlmacenaje <= 3 
 	exclusivaMayores60 :  exclusivaMayores60 != null
@@ -16,19 +16,15 @@ public abstract class VacunaCovid19 {
 	public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
     	if(nombre.equals("AstraZeneca") || nombre.equals("Moderna") || nombre.equals("Pfizer")
     		|| nombre.equals("Sinopharm") || nombre.equals("Sputnik") ) {
     		this.nombre = nombre;
     	} else throw new RuntimeException("Vacuna no valida!");
-        
     }
-
     public int getTemperaturaAlmacenaje() {
         return temperaturaAlmacenaje;
     }
-
     public void setTemperaturaAlmacenaje(int temperaturaAlmacenaje) {
     	if(-18 <= temperaturaAlmacenaje && temperaturaAlmacenaje <= 3) {
     		this.temperaturaAlmacenaje = temperaturaAlmacenaje;
@@ -37,19 +33,15 @@ public abstract class VacunaCovid19 {
     	}
         
     }
-    
     public boolean isExclusivaMayores60() {
         return exclusivaMayores60;
     }
-
     public void setExclusivaMayores60(boolean exclusivaMayores60) {
         this.exclusivaMayores60 = exclusivaMayores60;
     }
-    
 	public boolean estaVencida() {
 		return false;
 	}
-
 
     @Override
     public String toString() {

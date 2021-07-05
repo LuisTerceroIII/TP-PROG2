@@ -12,11 +12,9 @@ import centroVacunacion.VacunaCovid19;
 
  * */
 public class Moderna extends VacunaCovid19 {
-	
 	private Fecha fechaIngreso;
     private Fecha fechaVencimiento;
 
-    
 	public Moderna(Fecha fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
 		super.setNombre("Moderna");
@@ -34,33 +32,27 @@ public class Moderna extends VacunaCovid19 {
 		if(temperatura != -18) throw new RuntimeException("Moderna debe almacenarse a -18 grados");
 		this.temperaturaAlmacenaje = temperatura;
 	}
-	
 	public Fecha getFechaIngreso() {
 		return fechaIngreso;
 	}
-
 	public void setFechaIngreso(Fecha fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
 		setFechaVencimiento(fechaIngreso);
 	}
-	
 	private void setFechaVencimiento(Fecha fechaIngreso) {
 		this.fechaVencimiento = new Fecha(fechaIngreso);
 		this.fechaVencimiento.avanzar60Dias();
 	}
-
 	public Fecha getFechaVencimiento() {
 		return fechaVencimiento;
 	}
-	
-	
+
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder(super.toString());
     	sb.append("Fecha de ingreso : ").append(fechaIngreso).append(", Fecha de Vencimiento : ").append(fechaVencimiento);
         return sb.toString();
     }
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -72,7 +64,6 @@ public class Moderna extends VacunaCovid19 {
 		result = prime * result + getTemperaturaAlmacenaje();
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

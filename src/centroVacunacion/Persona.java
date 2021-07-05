@@ -108,16 +108,15 @@ public class Persona {
 			turno.asignarVacuna(vacuna);
 		}
 	}
-
 	public Turno getTurno() {
 		return turno;
 	}
-	
 	//Dado que la vacuna solo se puede obtener por medio de un turno, elegi hacerlo asi, se asigna una vacuna cuando se asigne un turno.
 	public void setTurno(Turno turno) {
 		this.vacuna = turno.getVacuna();
 		this.turno = turno;
 	}
+
 	@Override
 	public String toString() {
 		return new StringBuilder()
@@ -128,7 +127,4 @@ public class Persona {
 				.append(", Vacuna : ").append(vacuna != null ? vacuna.getNombre() : "" )
 				.append(", Turno : ").append(turno != null ? turno.getFecha() : "").append(" ]").toString();
 	}
-    
-    
-
 }

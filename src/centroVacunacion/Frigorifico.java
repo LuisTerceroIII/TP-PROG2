@@ -20,7 +20,6 @@ public class Frigorifico {
 	public boolean espacioLibre() {
 		return capacidadMaximaAlmacenamiento - espaciosOcupados > 0;
 	}
-
 	public void almacenar() {
 		if(espacioLibre()) {
 			espaciosOcupados++;
@@ -28,7 +27,6 @@ public class Frigorifico {
 			throw new RuntimeException("No hay espacio en el frigorifico");
 		}
 	}
-
 	public void liberarUnEspacio() {
 		if(espaciosOcupados <= 0 ) {
 			throw new RuntimeException("Frigorifico vacio");
@@ -36,22 +34,18 @@ public class Frigorifico {
 			espaciosOcupados--;
 		}
 	}
-
 	public int getTemperaturaAlamacenamiento() {
 		return temperaturaAlamacenamiento;
 	}
-
 	public void setTemperaturaAlamacenamiento(int temperaturaAlamacenamiento) {
 		if(temperaturaAlamacenamiento < -25 || temperaturaAlamacenamiento > 5) {
 			throw new RuntimeException("Temperatura invalida, intente entre -25 y 5 grados");
 		}
 		this.temperaturaAlamacenamiento = temperaturaAlamacenamiento;
 	}
-
 	public int getCapacidadMaximaAlmacenamiento() {
 		return capacidadMaximaAlmacenamiento;
 	}
-
 	public void setCapacidadMaximaAlmacenamiento(int capacidadMaximaAlmacenamiento) {
 		if(capacidadMaximaAlmacenamiento > 50000) {
 			throw new RuntimeException("Capacidad maxima no disponible ; min : 10.000, max: 50.000");
@@ -61,7 +55,6 @@ public class Frigorifico {
 		}
 		this.capacidadMaximaAlmacenamiento = capacidadMaximaAlmacenamiento;
 	}
-	
 	public int getEspaciosOcupados() {
 		return espaciosOcupados;
 	}

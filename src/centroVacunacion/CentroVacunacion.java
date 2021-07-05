@@ -12,12 +12,8 @@ import centroVacunacion.vacunas.SputnikV;
 /*
  * IREP : 
 	nombreCentro: nombreCentro.length() > 1 && nombreCentro != null
-	personasSinTurno: personaSinTurno != null
-	personasConTurno: personasConTurno.size() == turnos.size()
-	personasVacunadas: personasVacunadas != null
 	deposito: deposito != null
-	vacunasVencidas: vacunasVencidas.get("Moderna") >= 0 && vacunasVencidas.get("Pfizer") >= 0
-	turnos: turnos.size() == personasConTurno.size()
+	controlTurnos : controlTurnos != null
 	capacidadVacunacionDiaria: 0 < capacidadDiaria < 1000
 	turnosPorDia: 0 <= turnosPorDia <= capacidadVacunacionDiaria
 	turnosAsignados: 0 <= turnosAsignados <= personasVacunadas.size()
@@ -27,8 +23,7 @@ public class CentroVacunacion {
 	
 	  	private String nombreCentro;
 	    private DepositoVacunas deposito;//De aqui se sacan las vacunas.
-		private ControlTurnos controlTurnos;
-	    private HashMap<String,Integer> vacunasVencidas; // Cantidad de vacunas vencidas en este vacunatorio.
+		private ControlTurnos controlTurnos;// De aqui se sacan los turnos y las personas.
 	    private int capacidadVacunacionDiaria;
 		private int turnosPorDia; // creo esta copia para no modificar la variable de instancia y no perder el valor dado al inicio cuando tenga que "recargar" los cupos al avanzar de dia.
 	    private int turnosAsignados; // Contador historico de cuantos turnos se han dado.
@@ -47,12 +42,7 @@ public class CentroVacunacion {
 		    	setTurnosPorDia(capacidadVacunacionDiaria);
 		    	this.controlTurnos = new ControlTurnos();
 		    	this.deposito = new DepositoVacunas();
-		    	this.vacunasVencidas = new HashMap<>();
 		    	this.turnosAsignados = 0;	
-		    	vacunasVencidas.put("Moderna", 0);
-		    	vacunasVencidas.put("Pfizer", 0);
-		    	
-		    	
 	    	}
 	    }
 
@@ -154,9 +144,9 @@ public class CentroVacunacion {
 	    public void generarTurnos(Fecha fechaInicial) {
 	    	if(fechaInicial.anterior(Fecha.hoy())) throw new RuntimeException("La fecha es anterior a la de hoy !");
 	    	/* Verificar turnos vencidos*/
-	    	verificarTurnosVencidos();
+	    	controlTurnos.verificarTurnosVencidos(deposito);
 	    	/*Verificar vacunas vencidas*/
-	    	verificarVencimientoVacunas();
+	    	deposito.verificarVencimientoVacunas();
 	    	/*Generacion de turnos !*/
 	    	/*1er Parte: Division de las personas inscriptas en categorias*/
 	    	HashSet<Persona> trabajadoresSalud = new HashSet<>();
@@ -197,7 +187,7 @@ public class CentroVacunacion {
 	    			VacunaCovid19 vacuna = itVacunas.next();
 	    			boolean esFitzerOSputnikV = (vacuna instanceof Pfizer || vacuna instanceof SputnikV);
 	    			boolean noTieneTurno = persona.getTurno() == null;
-	    			
+
 					if (personaMayor60(persona) && esFitzerOSputnikV && noTieneTurno){
 						fechaInicial = asignarTurnoAux(fechaInicial, persona, itVacunas, vacuna);
 					} else if(!personaMayor60(persona) && !esFitzerOSputnikV && noTieneTurno){
@@ -247,7 +237,7 @@ public class CentroVacunacion {
 	    */
 		public void vacunarInscripto(int dni, Fecha fechaVacunacion) {
 	    	if(controlTurnos.personaTieneTurno(dni)) {
-	    		Persona persona = controlTurnos.getPersonaConTurno(dni);
+	    		Persona persona = controlTurnos.getPersonaConTurnoPorDNI(dni);
 	    		if(persona.fechaTurno().equals(fechaVacunacion)) {
 					controlTurnos.eliminarPersonaConTurno(dni);
 					controlTurnos.agregarPersonaVacunada(persona);
@@ -266,7 +256,7 @@ public class CentroVacunacion {
 	    public Map<Integer, String> reporteVacunacion() {
 	    	HashMap<Integer,String> vacunados = new HashMap<>();
 			for (Integer dni : controlTurnos.getDNIsPersonasVacunadas()) {
-				Persona persona = controlTurnos.getPersonaVacunada(dni);
+				Persona persona = controlTurnos.getPersonaVacunadaPorDNI(dni);
 				vacunados.put(persona.getDni(), persona.nombreVacunaAsignada());
 			}
 	    	return vacunados;
@@ -276,7 +266,7 @@ public class CentroVacunacion {
 	    * - clave: nombre de la vacuna
 	    * - valor: cantidad de vacunas vencidas conocidas hasta el momento. */
 	    public Map<String, Integer> reporteVacunasVencidas() {
-	    	return vacunasVencidas;
+	    	return deposito.getVacunasVencidas();
 	    }
 
 		@Override
@@ -292,44 +282,6 @@ public class CentroVacunacion {
 		}
 
 		//Funciones AUX :
-
-		private void verificarVencimientoVacunas() {
-			Iterator<VacunaCovid19> itVacunas = deposito.getIteratorVacunasEnStock();
-			while(itVacunas.hasNext()) {
-				VacunaCovid19 vacuna = itVacunas.next();
-				if(vacuna.estaVencida()) {
-					eliminarVacunaVencida(itVacunas, vacuna);
-				}
-			}
-		}
-		
-		//Se elimina la vacuna vencida y se suma en 1 la cantidad de vacunas vencidas. Cuenta llevada por "vacunasVencidas"
-		private void eliminarVacunaVencida(Iterator<VacunaCovid19> itVacunas, VacunaCovid19 vacuna) {
-			itVacunas.remove();
-			Integer cantVencidas = vacunasVencidas.get(vacuna.getNombre());
-			cantVencidas++;
-			vacunasVencidas.put(vacuna.getNombre(), cantVencidas);
-		}
-
-		private void verificarTurnosVencidos() {
-			Iterator<Turno> itTurnos = controlTurnos.getIteratorTurnos();
-			while(itTurnos.hasNext()) {
-				Turno turno = itTurnos.next();
-				if(turno.estaVencido()) {
-					eliminarTurnoVencido(itTurnos, turno);
-				}
-			}
-		}
-		
-		//Se encarga de eliminar el turno de "turnos", la persona de "personasConTurno", y mueve Vacuna de "vacunaReservada" a "vacunaEnStock"
-		private void eliminarTurnoVencido(Iterator<Turno> itTurnos, Turno turno) {
-			int dni = turno.dniPersona();
-			VacunaCovid19 vacuna = turno.getVacuna();
-			controlTurnos.eliminarPersonaConTurno(dni);
-			deposito.eliminarVacunaReservada(vacuna);
-			deposito.agregarVacunaAStock(vacuna);
-			itTurnos.remove();
-		}
 
 		/*Recibe fecha para generar turno, si no hay turnos disponibles se asgina fecha para "manana"*/
 		private Fecha generarFechaTurno(Fecha fechaInicial) {

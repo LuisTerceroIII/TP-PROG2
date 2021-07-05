@@ -16,8 +16,7 @@ public class SputnikV extends VacunaCovid19 {
 	}
 	@Override
 	public void setTemperaturaAlmacenaje(int temperatura) {
-		if(temperatura != 3) throw new RuntimeException("Sputnik V debe almacenarse a 3 grados");
+		if (temperatura != 3) throw new RuntimeException("Sputnik V debe almacenarse a 3 grados");
 		this.temperaturaAlmacenaje = temperatura;
 	}
-	
 }

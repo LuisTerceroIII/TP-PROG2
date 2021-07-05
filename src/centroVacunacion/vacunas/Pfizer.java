@@ -11,7 +11,6 @@ IREP:
 	fechaVencimiento: fechaVencimiento.compareTo(fechaIngreso) > 0 SIEMPRE
  * */
 public class Pfizer extends VacunaCovid19 {
-	
 	private Fecha fechaIngreso;
     private Fecha fechaVencimiento;
 
@@ -27,20 +26,16 @@ public class Pfizer extends VacunaCovid19 {
 		if(temperatura != -18) throw new RuntimeException("Pfizer debe almacenarse a -18 grados");
 		this.temperaturaAlmacenaje = temperatura;
 	}
-
 	private void setFechaVencimiento(Fecha fechaIngreso) {
 		this.fechaVencimiento = new Fecha(fechaIngreso);
 		this.fechaVencimiento.avanzar30Dias();
 	}
-
 	public Fecha getFechaVencimiento() {
 		return fechaVencimiento;
 	}
-	
 	public Fecha getFechaIngreso() {
 		return fechaIngreso;
 	}
-
 	public void setFechaIngreso(Fecha fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
 		setFechaVencimiento(fechaIngreso);
@@ -55,8 +50,7 @@ public class Pfizer extends VacunaCovid19 {
     	sb.append("Fecha de ingreso : ").append(fechaIngreso).append(", Fecha de Vencimiento : ").append(fechaVencimiento);
         return sb.toString();
     }
-    
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -99,7 +93,6 @@ public class Pfizer extends VacunaCovid19 {
 			return false;
 		return true;
 	}
-	
 }
 
 
